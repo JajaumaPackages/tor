@@ -10,7 +10,7 @@
 
 Name:		tor
 Version:	0.1.1.23
-Release:	%release_func 3
+Release:	%release_func 4
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -176,6 +176,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Sep 26 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.23-4
+- first FE release (review #175433)
+
 * Mon Sep 25 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.23-3
 - removed '.have-lsb' and related logic in logrotate script; check for
   existence of the corresponding initscript instead of
