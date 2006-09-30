@@ -1,8 +1,9 @@
-## $Id$
-
 ## This package understands the following switches:
+%bcond_without		fedora
+
 
 %global username		toranon
+%global uid			19
 %global homedir			%_var/lib/%name
 %global logdir			%_var/log/%name
 
@@ -10,7 +11,7 @@
 
 Name:		tor
 Version:	0.1.1.23
-Release:	%release_func 4
+Release:	%release_func 5
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -27,25 +28,28 @@ Source0:	http://tor.eff.org/dist/%name-%version.tar.gz
 Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
 Patch0:		tor-0.1.0.15-setgroups.patch
-BuildRoot:	%_tmppath/%name-%version-%release-root-%(%__id_u -n)
+BuildRoot:	%_tmppath/%name-%version-%release-root
 
 BuildRequires:	libevent-devel openssl-devel transfig tetex-latex ghostscript
+BuildRequires:	fedora-usermgmt-devel
+Provides:		user(%username)  = %uid
+Provides:		group(%username) = %uid
 Requires:		init(%name)
-Requires(pre):		fedora-usermgmt /etc/logrotate.d
-Requires(postun):	fedora-usermgmt /etc/logrotate.d
+Requires(pre):		/etc/logrotate.d
+Requires(postun):	/etc/logrotate.d
+%{?FE_USERADD_REQ}
 
 
 %package lsb
 Summary:	LSB initscripts for tor
 Group:		System Environment/Daemons
 Provides:	init(%name) = lsb
-Requires:	lsb
 Requires:	%name-core =  %version-%release
 Source10:	tor.lsb
 Requires(pre):		%name-core
-Requires(postun):	lsb %name-core
-Requires(post):		lsb
-Requires(preun):	lsb
+Requires(postun):	lsb-core-noarch %name-core
+Requires(post):		lsb-core-noarch
+Requires(preun):	lsb-core-noarch
 
 
 %description
@@ -112,14 +116,13 @@ install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
 
 %pre core
-/usr/sbin/fedora-groupadd 19 -r %username &>/dev/null || :
-/usr/sbin/fedora-useradd  19 -r  -s /sbin/nologin -M -d %homedir	\
-	-c 'tor anonymizing user' -g %username %username &>/dev/null || :
-
+%__fe_groupadd %uid -r %username &>/dev/null || :
+%__fe_useradd  %uid -r -s /sbin/nologin -d %homedir -M          \
+                    -c 'TOR anonymizing user' -g %username %username &>/dev/null || :
 
 %postun core
-test "$1" != 0 || /usr/sbin/fedora-userdel  %username &>/dev/null || :
-test "$1" != 0 || /usr/sbin/fedora-groupdel %username &>/dev/null || :
+%__fe_userdel  %username &>/dev/null || :
+%__fe_groupdel %username &>/dev/null || :
 
 
 %post lsb
@@ -176,6 +179,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 30 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.23-5
+- updated to recent fedora-usermgmt
+- minor cleanups
+- require only 'lsb-core-noarch' instead of whole 'lsb'
+
 * Tue Sep 26 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.23-4
 - first FE release (review #175433)
 
