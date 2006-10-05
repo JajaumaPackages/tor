@@ -10,8 +10,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.1.1.23
-Release:	%release_func 5
+Version:	0.1.1.24
+Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -179,6 +179,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Oct  5 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.24-1
+- updated to 0.1.1.24
+
 * Sat Sep 30 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.23-5
 - updated to recent fedora-usermgmt
 - minor cleanups
