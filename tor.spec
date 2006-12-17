@@ -10,7 +10,7 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.1.1.24
+Version:	0.1.1.26
 Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
@@ -89,8 +89,7 @@ daemon.
 %setup -q
 %patch0 -p1 -b .setgroups
 
-sed -i -e 's!^\# *\(Log notice file \)!\1!;
-	   s!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
+sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
 cat <<EOF >>src/config/torrc.sample.in
 Group %username
 User  %username
@@ -179,6 +178,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec 17 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.26-1
+- updated to 0.1.1.26 (SECURITY)
+- do not turn on logging by default; it's easier to say "we do not log
+  anything" to the police instead of enumerating the logged event
+  classes and trying to explain that they do not contain any valuable
+  information
+
+* Sun Nov 12 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.25-1
+- updated to 0.1.1.25
+
 * Thu Oct  5 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.24-1
 - updated to 0.1.1.24
 
