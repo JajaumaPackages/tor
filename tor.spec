@@ -11,7 +11,7 @@
 
 Name:		tor
 Version:	0.1.1.26
-Release:	%release_func 1
+Release:	%release_func 2
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -27,7 +27,7 @@ URL:		http://tor.eff.org
 Source0:	http://tor.eff.org/dist/%name-%version.tar.gz
 Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
-Patch0:		tor-0.1.0.15-setgroups.patch
+Patch0:		tor-0.1.1.26-setgroups.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
 BuildRequires:	libevent-devel openssl-devel transfig tetex-latex ghostscript
@@ -178,6 +178,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jan 24 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.26-2
+- updated -setgroups patch (#224090, thx to Sami Farin)
+
 * Sun Dec 17 2006 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.26-1
 - updated to 0.1.1.26 (SECURITY)
 - do not turn on logging by default; it's easier to say "we do not log

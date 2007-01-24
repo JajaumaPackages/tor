@@ -1,0 +1,14 @@
+--- tor-0.1.1.26/src/common/compat.c.setgroups	2006-09-24 19:47:57.000000000 +0200
++++ tor-0.1.1.26/src/common/compat.c	2007-01-24 08:41:03.000000000 +0100
+@@ -526,6 +526,11 @@
+       return -1;
+     }
+ 
++    if (getgroups(0,0)!=0 && setgroups(0,0)!=0) {
++      log_warn(LD_GENERAL,"Error setting groups: %s", strerror(errno));
++      return -1;
++    }
++
+     if (setgid(gr->gr_gid) != 0) {
+       log_warn(LD_GENERAL,"Error setting GID: %s", strerror(errno));
+       return -1;
