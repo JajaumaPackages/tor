@@ -11,7 +11,7 @@
 
 Name:		tor
 Version:	0.1.1.26
-Release:	%release_func 2
+Release:	%release_func 3
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -178,6 +178,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 26 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.26-3
+- rebuilt for new libevent
+
 * Wed Jan 24 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.26-2
 - updated -setgroups patch (#224090, thx to Sami Farin)
 
