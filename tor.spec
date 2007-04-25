@@ -10,8 +10,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.1.1.26
-Release:	%release_func 4
+Version:	0.1.2.13
+Release:	%release_func 0
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -144,20 +144,24 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc doc/HACKING doc/TODO
-%doc doc/*.txt
+%doc doc/spec/*.txt
 %doc doc/design-paper/tor-design.pdf
+%doc %lang(de) doc/website/*.de
 %doc %lang(en) doc/website/*.en
 %doc %lang(es) doc/website/*.es
 %doc %lang(fr) doc/website/*.fr
 %doc %lang(it) doc/website/*.it
+%doc %lang(pl) doc/website/*.pl
 %doc %lang(pt) doc/website/*.pt
 %doc %lang(ru) doc/website/*.ru
+%doc %lang(zh-cn) doc/website/*.zh-cn
 %doc doc/website/*.css
 
 
 %files core
 %defattr(-,root,root,-)
-%doc AUTHORS INSTALL LICENSE README ChangeLog
+%doc AUTHORS LICENSE README ChangeLog
+%doc ReleaseNotes
 %dir               %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%username,%username) %dir %homedir
@@ -178,6 +182,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Apr 25 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.13-1
+- updated to 0.1.2.13
+- minor cleanups; especially in the %%doc section
+
 * Sun Apr  8 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.1.26-4
 - rebuilt for (yet another) new libevent
 
