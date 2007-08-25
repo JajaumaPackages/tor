@@ -1,0 +1,11 @@
+--- tor-0.1.2.16/src/common/util.c.open
++++ tor-0.1.2.16/src/common/util.c
+@@ -2071,7 +2071,7 @@ finish_daemon(const char *desired_cwd)
+   }
+ 
+   nullfd = open("/dev/null",
+-                O_CREAT | O_RDWR | O_APPEND);
++                O_RDWR | O_APPEND);
+   if (nullfd < 0) {
+     log_err(LD_GENERAL,"/dev/null can't be opened. Exiting.");
+     exit(1);

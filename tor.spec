@@ -11,7 +11,7 @@
 
 Name:		tor
 Version:	0.1.2.16
-Release:	%release_func 1
+Release:	%release_func 2
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -28,6 +28,7 @@ Source0:	http://tor.eff.org/dist/%name-%version.tar.gz
 Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
 Patch0:		tor-0.1.1.26-setgroups.patch
+Patch1:		tor-0.1.2.16-open.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
 BuildRequires:	libevent-devel openssl-devel transfig tetex-latex ghostscript
@@ -88,6 +89,7 @@ daemon.
 %prep
 %setup -q
 %patch0 -p1 -b .setgroups
+%patch1 -p1 -b .open
 
 sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
 cat <<EOF >>src/config/torrc.sample.in
@@ -182,6 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Aug 25 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.16-2
+- fixed open(2) issue
+
 * Fri Aug  3 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.16-1
 - updated to 0.1.2.16 (SECURITY)
 
