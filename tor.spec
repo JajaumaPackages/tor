@@ -10,7 +10,7 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.1.2.17
+Version:	0.1.2.18
 Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
@@ -184,6 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Oct 30 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.18-1
+- updated to 0.1.2.18
+
 * Fri Aug 31 2007 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.17-1
 - updated to 0.1.2.17
 
