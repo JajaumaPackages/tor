@@ -11,7 +11,7 @@
 
 Name:		tor
 Version:	0.1.2.18
-Release: %release_func 2
+Release: %release_func 3
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -184,6 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 26 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.1.2.18- 3
+- Rebuild for new libevent.
+
 * Thu Dec 06 2007 Release Engineering <rel-eng at fedoraproject dot org> - 0.1.2.18-2
 - Rebuild for deps
 
