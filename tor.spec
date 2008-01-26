@@ -11,7 +11,7 @@
 
 Name:		tor
 Version:	0.1.2.18
-Release: %release_func 3
+Release: %release_func 4
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -31,7 +31,7 @@ Patch0:		tor-0.1.1.26-setgroups.patch
 Patch1:		tor-0.1.2.16-open.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
-BuildRequires:	libevent-devel openssl-devel transfig tetex-latex ghostscript
+BuildRequires:	libevent-devel openssl-devel transfig tex(latex) texlive-texmf-fonts ghostscript
 BuildRequires:	fedora-usermgmt-devel
 Provides:		user(%username)  = %uid
 Provides:		group(%username) = %uid
@@ -184,7 +184,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sat Jan 26 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.1.2.18- 3
+* Sat Jan 26 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.1.2.18-4
+- Update BuildRequires: tex(latex),
+- BR: texlive-texmf-fonts seems also to be necessary
+
+* Sat Jan 26 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.1.2.18-3
 - Rebuild for new libevent.
 
 * Thu Dec 06 2007 Release Engineering <rel-eng at fedoraproject dot org> - 0.1.2.18-2
