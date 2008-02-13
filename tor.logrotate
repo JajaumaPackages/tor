@@ -2,6 +2,7 @@
 	delaycompress
 	notifempty
 	sharedscripts
+	missingok
 	postrotate
 		test ! -f /etc/init.d/tor         || /etc/init.d/tor reload         >/dev/null 2>/dev/null || :
 		test ! -f /etc/initng/damon/tor.i || /sbin/ngc --restart daemon/tor >/dev/null 2>/dev/null || :
