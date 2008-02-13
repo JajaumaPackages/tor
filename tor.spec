@@ -10,8 +10,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.1.2.18
-Release: %release_func 4
+Version:	0.1.2.19
+Release: %release_func 1
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -31,7 +31,9 @@ Patch0:		tor-0.1.1.26-setgroups.patch
 Patch1:		tor-0.1.2.16-open.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
-BuildRequires:	libevent-devel openssl-devel transfig tex(latex) texlive-texmf-fonts ghostscript
+BuildRequires:	libevent-devel openssl-devel transfig ghostscript
+BuildRequires:	/usr/bin/latex
+BuildRequires:	texlive-texmf-fonts
 BuildRequires:	fedora-usermgmt-devel
 Provides:		user(%username)  = %uid
 Provides:		group(%username) = %uid
@@ -130,13 +132,11 @@ install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 /usr/lib/lsb/install_initd %_initrddir/tor
 
 %preun lsb
-test "$1" != 0 || {
-	%_initrddir/tor stop &>/dev/null || :
-	/usr/lib/lsb/remove_initd %_initrddir/tor
-}
+test "$1" != 0 || %_initrddir/tor stop &>/dev/null || :
+test "$1" != 0 || /usr/lib/lsb/remove_initd %_initrddir/tor
 
 %postun lsb
-test "$1"  = 0 || %_initrddir/tor try-restart &>/dev/null
+test "$1"  = 0 || env -i %_initrddir/tor try-restart &>/dev/null
 
 
 %clean
@@ -184,6 +184,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 12 2008 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.19-1
+- updated to 0.1.2.19
+- use file based BR for latex
+- improved 'status' method of initscript to return rc of 'pidofproc'
+  instead of doing further manual tests.  Calling 'pidofproc' directly
+  instead of within a subshell should workaround #432254 too.
+
 * Sat Jan 26 2008 Alex Lancaster <alexlan[AT]fedoraproject org> - 0.1.2.18-4
 - Update BuildRequires: tex(latex),
 - BR: texlive-texmf-fonts seems also to be necessary
