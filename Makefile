@@ -1,5 +1,4 @@
 # Makefile for source rpm: tor
-# $Id$
 NAME := tor
 SPECFILE = $(firstword $(wildcard *.spec))
 
