@@ -11,7 +11,7 @@
 
 Name:		tor
 Version:	0.1.2.19
-Release: %release_func 1
+Release:	%release_func 2
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -184,6 +184,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 13 2008 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.19-2
+- added 'missingok' to logrotate script (#429402)
+
 * Tue Feb 12 2008 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.1.2.19-1
 - updated to 0.1.2.19
 - use file based BR for latex
