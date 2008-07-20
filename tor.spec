@@ -10,8 +10,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.1.2.19
-Release:	%release_func 3
+Version:	0.2.0.30
+Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -27,8 +27,10 @@ URL:		http://tor.eff.org
 Source0:	http://tor.eff.org/dist/%name-%version.tar.gz
 Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
+Source3:	update-geoip
+Source4:	netfilter-ipv4.h
 Patch0:		tor-0.1.1.26-setgroups.patch
-Patch1:		tor-0.1.2.16-open.patch
+Patch1:		tor-0.2.0.30-geoippath.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
 BuildRequires:	libevent-devel openssl-devel transfig ghostscript
@@ -91,7 +93,9 @@ daemon.
 %prep
 %setup -q
 %patch0 -p1 -b .setgroups
-%patch1 -p1 -b .open
+%patch1 -p1 -b .geoippath
+
+install -p -m0644 %SOURCE3 .
 
 sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
 cat <<EOF >>src/config/torrc.sample.in
@@ -99,8 +103,13 @@ Group %username
 User  %username
 EOF
 
+mkdir -p linux
+install -p -m0644 %SOURCE4 linux/netfilter_ipv4.h
+
 
 %build
+export ac_cv_header_linux_netfilter_ipv4_h=yes
+export LDFLAGS='-Wl,--as-needed'
 %configure
 make %{?_smp_mflags}
 make -C doc/design-paper tor-design.pdf
@@ -112,10 +121,12 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 
-mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%_var/run/%name}
+mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%_var/run/%name,%_var/lib/tor-data}
 
 install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
 install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
+
+ln -s %_datadir/tor/geoip $RPM_BUILD_ROOT%_var/lib/tor-data/geoip
 
 
 %pre core
@@ -164,6 +175,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc AUTHORS LICENSE README ChangeLog
 %doc ReleaseNotes
+%doc update-geoip
 %dir               %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%username,%username) %dir %homedir
@@ -171,6 +183,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0640,root,%username) %config(noreplace) %_sysconfdir/tor/torrc
 %_bindir/*
 %_mandir/man1/*
+%_datadir/tor
+%dir %_var/lib/tor-data
+%config(noreplace) %_var/lib/tor-data/geoip
 
 %exclude %_bindir/torify
 %exclude %_mandir/man1/torify*
@@ -184,6 +199,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jul 20 2008 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.30-1
+- updated to 0.2.0.30
+- (re)enabled transparent proxy support by workarounding broken
+  <linux/netfilter_ipv4.h> header
+- moved the 'geoip' database to /var/lib/tor-data where it can be
+  updated periodically
+- built with -Wl,--as-needed
+
 * Thu Jul 10 2008 Nikolay Vladimirov <nikolay@vladimiroff.com> - 0.1.2.19-3
 - rebuild for new libevent
 
