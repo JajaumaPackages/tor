@@ -29,7 +29,7 @@ Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
 Source3:	update-geoip
 Source4:	netfilter-ipv4.h
-Patch0:		tor-0.1.1.26-setgroups.patch
+Patch0:		tor-0.2.0.30-setgroups.patch
 Patch1:		tor-0.2.0.30-geoippath.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
@@ -200,7 +200,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Sun Jul 20 2008 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.30-1
-- updated to 0.2.0.30
+- updated to 0.2.0.30; rediffed patches
 - (re)enabled transparent proxy support by workarounding broken
   <linux/netfilter_ipv4.h> header
 - moved the 'geoip' database to /var/lib/tor-data where it can be
