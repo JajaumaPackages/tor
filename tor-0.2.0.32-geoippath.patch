@@ -8,5 +8,5 @@ diff -up tor-0.2.0.30/src/or/config.c.~1~ tor-0.2.0.30/src/or/config.c
 -    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip"),
 +    "/var/lib/tor-data" PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip"),
  #endif
-   V(Group,                       STRING,   NULL),
+   OBSOLETE("Group"),
    V(HardwareAccel,               BOOL,     "0"),

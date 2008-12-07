@@ -50,7 +50,7 @@ Group:		System Environment/Daemons
 Provides:	init(%name) = lsb
 Requires:	%name-core =  %version-%release
 Source10:	tor.lsb
-BuildArch:		noarch
+#BuildArch:		noarch
 Requires(pre):		%name-core
 Requires(postun):	lsb-core-noarch %name-core
 Requires(post):		lsb-core-noarch
