@@ -10,7 +10,7 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.2.0.30
+Version:	0.2.0.32
 Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
@@ -29,8 +29,7 @@ Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
 Source3:	update-geoip
 Source4:	netfilter-ipv4.h
-Patch0:		tor-0.2.0.30-setgroups.patch
-Patch1:		tor-0.2.0.30-geoippath.patch
+Patch1:		tor-0.2.0.32-geoippath.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
 BuildRequires:	libevent-devel openssl-devel transfig ghostscript
@@ -51,6 +50,7 @@ Group:		System Environment/Daemons
 Provides:	init(%name) = lsb
 Requires:	%name-core =  %version-%release
 Source10:	tor.lsb
+BuildArch:		noarch
 Requires(pre):		%name-core
 Requires(postun):	lsb-core-noarch %name-core
 Requires(post):		lsb-core-noarch
@@ -92,7 +92,6 @@ daemon.
 
 %prep
 %setup -q
-%patch0 -p1 -b .setgroups
 %patch1 -p1 -b .geoippath
 
 install -p -m0644 %SOURCE3 .
@@ -199,6 +198,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec  7 2008 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.32-1
+- updated to 0.2.0.32
+- removed -setgroups patch; supplementary groups are now set upstream
+
 * Sun Jul 20 2008 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.30-1
 - updated to 0.2.0.30; rediffed patches
 - (re)enabled transparent proxy support by workarounding broken
