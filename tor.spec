@@ -10,8 +10,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.2.0.32
-Release:	%release_func 2
+Version:	0.2.0.33
+Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -198,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 22 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.33-1
+- updated to 0.2.0.33 (SECURITY: fixed heap-corruption bug)
+
 * Sun Jan 18 2009 Tomas Mraz <tmraz@redhat.com> - 0.2.0.32-2
 - rebuild with new openssl
 
