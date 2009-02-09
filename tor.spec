@@ -10,7 +10,7 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.2.0.33
+Version:	0.2.0.34
 Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
@@ -198,6 +198,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 10 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.34-1
+- updated to 0.2.0.34 (SECURITY: fixes DoS vulnerabilities)
+
 * Thu Jan 22 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.33-1
 - updated to 0.2.0.33 (SECURITY: fixed heap-corruption bug)
 
