@@ -11,7 +11,7 @@
 
 Name:		tor
 Version:	0.2.0.34
-Release:	%release_func 2
+Release:	%release_func 3
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -50,11 +50,24 @@ Group:		System Environment/Daemons
 Provides:	init(%name) = lsb
 Requires:	%name-core =  %version-%release
 Source10:	tor.lsb
-#BuildArch:		noarch
+BuildArch:		noarch
 Requires(pre):		%name-core
 Requires(postun):	lsb-core-noarch %name-core
 Requires(post):		lsb-core-noarch
 Requires(preun):	lsb-core-noarch
+
+
+%package upstart
+Summary:		upstart initscripts for %name
+Group:			System Environment/Base
+Source20:		%name.upstart
+Provides:		init(%name) = upstart
+Requires:		%name = %version-%release
+# implicates a conflict with upstart 0.5+
+Requires(pre):		/etc/event.d	
+Requires(post):		/usr/bin/killall
+Requires(postun):	/sbin/initctl
+BuildArch:		noarch
 
 
 %description
@@ -87,6 +100,13 @@ and a relay node.
 Tor is a connection-based low-latency anonymous communication system.
 
 This package contains the LSB compliant initscripts to start the "tor"
+daemon.
+
+
+%description upstart
+Tor is a connection-based low-latency anonymous communication system.
+
+This package contains the upstart compliant initscripts to start the "tor"
 daemon.
 
 
@@ -125,6 +145,8 @@ mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%
 install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
 install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
+install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/event.d/tor
+
 ln -s %_datadir/tor/geoip $RPM_BUILD_ROOT%_var/lib/tor-data/geoip
 
 
@@ -147,6 +169,13 @@ test "$1" != 0 || /usr/lib/lsb/remove_initd %_initrddir/tor
 
 %postun lsb
 test "$1"  = 0 || env -i %_initrddir/tor try-restart &>/dev/null
+
+
+%post upstart
+/usr/bin/killall -u %username tor 2>/dev/null || :
+
+%preun upstart
+test "$1" != "0" || /sbin/initctl -q stop tor || :
 
 
 %clean
@@ -197,7 +226,16 @@ rm -rf $RPM_BUILD_ROOT
   %attr(0755,%username,%username) %dir %_var/run/%name
 
 
+%files upstart
+%defattr(-,root,root,-)
+%config(noreplace) /etc/event.d/*
+
+
 %changelog
+* Sat Mar  7 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.34-3
+- added -upstart subpackage (-lsb still wins by default as there exists
+  no end-user friendly solution for managing upstart initscripts)
+
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.0.34-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 

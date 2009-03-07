@@ -1,0 +1,15 @@
+### Uncomment matching 'start' lines below.
+
+### 'starting\ local' and 'starting local' should be uncommented
+### together as former is required due to broken Fedora initscripts
+### and latter is the correct one
+
+#start on starting\ local
+#start on starting local
+
+stop  on runlevel 0
+stop  on runlevel 1
+stop  on runlevel 6
+
+respawn
+exec /usr/bin/tor
