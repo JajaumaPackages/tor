@@ -1,5 +1,6 @@
 ## This package understands the following switches:
 %bcond_without		fedora
+%bcond_without		noarch
 
 
 %global username		toranon
@@ -7,11 +8,12 @@
 %global homedir			%_var/lib/%name
 %global logdir			%_var/log/%name
 
+%{?with_noarch:%global noarch	BuildArch:	noarch}
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
 Version:	0.2.0.34
-Release:	%release_func 3
+Release:	%release_func 4
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -50,11 +52,11 @@ Group:		System Environment/Daemons
 Provides:	init(%name) = lsb
 Requires:	%name-core =  %version-%release
 Source10:	tor.lsb
-BuildArch:		noarch
 Requires(pre):		%name-core
 Requires(postun):	lsb-core-noarch %name-core
 Requires(post):		lsb-core-noarch
 Requires(preun):	lsb-core-noarch
+%{?noarch}
 
 
 %package upstart
@@ -67,7 +69,7 @@ Requires:		%name = %version-%release
 Requires(pre):		/etc/event.d	
 Requires(post):		/usr/bin/killall
 Requires(postun):	/sbin/initctl
-BuildArch:		noarch
+%{?noarch}
 
 
 %description
@@ -232,6 +234,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed May  6 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.34-4
+- made it easy to rebuild package in RHEL by adding a 'noarch'
+  conditional to enable/disable noarch subpackages
+
 * Sat Mar  7 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.34-3
 - added -upstart subpackage (-lsb still wins by default as there exists
   no end-user friendly solution for managing upstart initscripts)
