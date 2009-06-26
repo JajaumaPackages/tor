@@ -186,7 +186,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc doc/HACKING doc/TODO
+%doc doc/HACKING
 %doc doc/spec/*.txt
 %doc doc/design-paper/tor-design.pdf
 %doc %lang(de) doc/website/*.de
@@ -194,6 +194,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc %lang(es) doc/website/*.es
 %doc %lang(fr) doc/website/*.fr
 %doc %lang(it) doc/website/*.it
+%doc %lang(ko) doc/website/*.ko
 %doc %lang(pl) doc/website/*.pl
 %doc %lang(pt) doc/website/*.pt
 %doc %lang(ru) doc/website/*.ru
@@ -237,6 +238,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Jun 26 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.35-1
 - updated to 0.2.0.35
 - added '--quiet' to startup options (bug #495987)
+- updated %%doc entries
 
 * Wed May  6 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.34-4
 - made it easy to rebuild package in RHEL by adding a 'noarch'
