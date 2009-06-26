@@ -12,4 +12,4 @@ stop  on runlevel 1
 stop  on runlevel 6
 
 respawn
-exec /usr/bin/tor
+exec /usr/bin/tor --quiet

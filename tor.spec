@@ -12,8 +12,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.2.0.34
-Release:	%release_func 4
+Version:	0.2.0.35
+Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -234,6 +234,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Jun 26 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.35-1
+- updated to 0.2.0.35
+- added '--quiet' to startup options (bug #495987)
+
 * Wed May  6 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.0.34-4
 - made it easy to rebuild package in RHEL by adding a 'noarch'
   conditional to enable/disable noarch subpackages

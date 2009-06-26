@@ -17,7 +17,7 @@
 
 f=/etc/sysconfig/tor
 
-TOR_OPTS=
+TOR_OPTS=--quiet
 TOR_PIDFILE=/var/run/tor/tor.pid
 TOR_USER=toranon
 test ! -r "$f" || . "$f"
