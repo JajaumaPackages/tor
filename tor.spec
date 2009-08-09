@@ -12,8 +12,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.2.0.35
-Release:	%release_func 2
+Version:	0.2.1.19
+Release:	%release_func 0
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -31,7 +31,7 @@ Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
 Source3:	update-geoip
 Source4:	netfilter-ipv4.h
-Patch1:		tor-0.2.0.32-geoippath.patch
+Patch1:		tor-0.2.1.19-geoippath.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
 BuildRequires:	libevent-devel openssl-devel transfig ghostscript
@@ -120,7 +120,6 @@ install -p -m0644 %SOURCE3 .
 
 sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
 cat <<EOF >>src/config/torrc.sample.in
-Group %username
 User  %username
 EOF
 
@@ -235,6 +234,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Aug  9 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.19-0
+- updated to 0.2.1.19
+- rediffed patches
+
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.0.35-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 

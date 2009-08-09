@@ -1,0 +1,13 @@
+Index: tor-0.2.1.19/src/or/config.c
+===================================================================
+--- tor-0.2.1.19.orig/src/or/config.c
++++ tor-0.2.1.19/src/or/config.c
+@@ -218,7 +218,7 @@ static config_var_t _option_vars[] = {
+   V(GeoIPFile,                   FILENAME, "<default>"),
+ #else
+   V(GeoIPFile,                   FILENAME,
+-    SHARE_DATADIR PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip"),
++    "/var/lib/tor-data" PATH_SEPARATOR "tor" PATH_SEPARATOR "geoip"),
+ #endif
+   OBSOLETE("Group"),
+   V(HardwareAccel,               BOOL,     "0"),
