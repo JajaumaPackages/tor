@@ -13,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.1.19
-Release:	%release_func 0
+Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -234,6 +234,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 0.2.1.19-1
+- rebuilt with new openssl
+
 * Sun Aug  9 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.19-0
 - updated to 0.2.1.19
 - rediffed patches
