@@ -13,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.1.19
-Release:	%release_func 1
+Release:	%release_func 2
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -66,7 +66,7 @@ Source20:		%name.upstart
 Provides:		init(%name) = upstart
 Requires:		%name = %version-%release
 # implicates a conflict with upstart 0.5+
-Requires(pre):		/etc/event.d	
+Requires(pre):		/etc/event.d
 Requires(post):		/usr/bin/killall
 Requires(postun):	/sbin/initctl
 %{?noarch}
@@ -162,7 +162,14 @@ ln -s %_datadir/tor/geoip $RPM_BUILD_ROOT%_var/lib/tor-data/geoip
 
 
 %post lsb
-/usr/lib/lsb/install_initd %_initrddir/tor
+/usr/lib/lsb/install_initd %_initrddir/tor || {
+	cat <<EOF >&2
+oouch... redhat-lsb is still broken. See the report
+https://bugzilla.redhat.com/show_bug.cgi?id=522053
+for details.
+EOF
+	/sbin/chkconfig --add tor
+}
 
 %preun lsb
 test "$1" != 0 || %_initrddir/tor stop &>/dev/null || :
@@ -234,6 +241,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Sep 12 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.19-2
+- workaround bug in redhat-lsb (#522053)
+
 * Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 0.2.1.19-1
 - rebuilt with new openssl
 
