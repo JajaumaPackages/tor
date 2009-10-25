@@ -12,8 +12,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.2.1.19
-Release:	%release_func 2
+Version:	0.2.1.20
+Release:	%release_func 1
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -241,6 +241,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Oct 25 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1
+- updated to 0.2.1.20
+
 * Sat Sep 12 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.19-2
 - workaround bug in redhat-lsb (#522053)
 
