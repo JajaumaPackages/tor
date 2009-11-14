@@ -11,5 +11,7 @@ stop  on runlevel 0
 stop  on runlevel 1
 stop  on runlevel 6
 
+limit nofile 4096
+
 respawn
 exec /usr/bin/tor --quiet

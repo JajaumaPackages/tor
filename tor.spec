@@ -13,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.1.20
-Release:	%release_func 1
+Release:	%release_func 1300
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -25,13 +25,10 @@ Requires:	%name-lsb  = %version-%release
 %package core
 Summary:	Core programs for tor
 Group:		System Environment/Daemons
-URL:		http://tor.eff.org
-Source0:	http://tor.eff.org/dist/%name-%version.tar.gz
-Source1:	http://tor.eff.org/dist/%name-%version.tar.gz.asc
+URL:		http://www.torproject.org
+Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
+Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
-Source3:	update-geoip
-Source4:	netfilter-ipv4.h
-Patch1:		tor-0.2.1.19-geoippath.patch
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
 BuildRequires:	libevent-devel openssl-devel transfig ghostscript
@@ -111,26 +108,18 @@ Tor is a connection-based low-latency anonymous communication system.
 This package contains the upstart compliant initscripts to start the "tor"
 daemon.
 
-
 %prep
 %setup -q
-%patch1 -p1 -b .geoippath
-
-install -p -m0644 %SOURCE3 .
 
 sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
 cat <<EOF >>src/config/torrc.sample.in
 User  %username
 EOF
 
-mkdir -p linux
-install -p -m0644 %SOURCE4 linux/netfilter_ipv4.h
-
 
 %build
-export ac_cv_header_linux_netfilter_ipv4_h=yes
 export LDFLAGS='-Wl,--as-needed'
-%configure
+%configure --enable-gcc-warnings
 make %{?_smp_mflags}
 make -C doc/design-paper tor-design.pdf
 
@@ -147,8 +136,6 @@ install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
 install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
 install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/event.d/tor
-
-ln -s %_datadir/tor/geoip $RPM_BUILD_ROOT%_var/lib/tor-data/geoip
 
 
 %pre core
@@ -179,8 +166,8 @@ test "$1" != 0 || /usr/lib/lsb/remove_initd %_initrddir/tor
 test "$1"  = 0 || env -i %_initrddir/tor try-restart &>/dev/null
 
 
-%post upstart
-/usr/bin/killall -u %username tor 2>/dev/null || :
+%postun upstart
+/usr/bin/killall -u %username -s INT tor 2>/dev/null || :
 
 %preun upstart
 test "$1" != "0" || /sbin/initctl -q stop tor || :
@@ -212,7 +199,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc AUTHORS LICENSE README ChangeLog
 %doc ReleaseNotes
-%doc update-geoip
 %dir               %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%username,%username) %dir %homedir
@@ -222,7 +208,6 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man1/*
 %_datadir/tor
 %dir %_var/lib/tor-data
-%config(noreplace) %_var/lib/tor-data/geoip
 
 %exclude %_bindir/torify
 %exclude %_mandir/man1/torify*
@@ -241,6 +226,18 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Nov 14 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1300
+- updated URLs (#532373)
+- removed (inactive) update mechanism for GeoIP data; this might reduce anonimity (#532373)
+- use pidfile at various places in the LSB initscript to operate on the correct process (#532373)
+- set a higher 'nofile' limit in the upstart initscript to allow fast
+  relays; LSB users will have to add a 'ulimit -n' into /etc/sysconfig/tor
+  to get a similar effect (#532373)
+- use %%postun, not %%post as a -upstart scriptlet and send INT, not
+  TERM signal to stop/restart daemon
+- let the LSB initscript wait until process within a certain time;
+  this fixes shutdown/restart problems when working as a server (#532373)
+
 * Sun Oct 25 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1
 - updated to 0.2.1.20
 

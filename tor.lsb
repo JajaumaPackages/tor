@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Init file for tor - An Anonymizing overlay network for TCP
 #
@@ -17,6 +17,7 @@
 
 f=/etc/sysconfig/tor
 
+TOR_SHUTDOWN_WAIT=30
 TOR_OPTS=--quiet
 TOR_PIDFILE=/var/run/tor/tor.pid
 TOR_USER=toranon
@@ -43,7 +44,22 @@ start() {
 
 stop() {
     echo -n $"Stopping $prog: "
-    killproc $prog -INT && log_success_msg || log_failure_msg
+    if ! killproc -p "$pidfile" $prog -INT; then
+	log_failure_msg
+    else
+	cnt=$TOR_SHUTDOWN_WAIT
+	while test $cnt -gt 0 && killproc -p "$pidfile" $prog -0; do
+	    sleep 1
+	    let --cnt
+	done
+
+	if test $cnt -ne 0 || killproc -p "$pidfile" $prog; then
+	    log_success_msg
+	else
+	    log_failure_msg
+	fi
+    fi
+
     rm -f $pidfile $lockfile
 }
 
@@ -54,11 +70,11 @@ restart() {
 
 reload() {
     echo -n $"Reloading $prog: "
-    killproc $prog -HUP && log_success_msg || log_failure_msg
+    killproc -p "$pidfile" $prog -HUP && log_success_msg || log_failure_msg
 }
 
 status() {
-    pidofproc -p "$TOR_PIDFILE" "$prog" >/dev/null 2>&1
+    pidofproc -p "$pidfile" "$prog" >/dev/null 2>&1
     rc=$?
     case $rc in
       (0) echo $"$prog is running";;
