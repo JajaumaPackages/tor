@@ -119,7 +119,7 @@ EOF
 
 %build
 export LDFLAGS='-Wl,--as-needed'
-%configure --enable-gcc-warnings
+%configure
 make %{?_smp_mflags}
 make -C doc/design-paper tor-design.pdf
 
@@ -239,7 +239,6 @@ rm -rf $RPM_BUILD_ROOT
   time; this fixes shutdown/restart problems when working as a server
   (#532373)
 - fixed initng related typo in logrotate script (#532373)
-- enabled --enable-gcc-warnings ./configure option (#532373)
 - removed <linux/netfilter_ipv4.h> hack; it is fixed upstream and/or
   in the kernel sources
 - use %%postun, not %%post as a -upstart scriptlet and send INT, not
