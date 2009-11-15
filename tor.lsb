@@ -48,9 +48,8 @@ stop() {
 	log_failure_msg
     else
 	cnt=$TOR_SHUTDOWN_WAIT
-	while test $cnt -gt 0 && killproc -p "$pidfile" $prog -0; do
+	while let '--cnt > 0' && killproc -p "$pidfile" $prog -0; do
 	    sleep 1
-	    let --cnt
 	done
 
 	if test $cnt -ne 0 || killproc -p "$pidfile" $prog; then

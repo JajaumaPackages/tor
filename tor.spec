@@ -228,15 +228,22 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Sat Nov 14 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1300
 - updated URLs (#532373)
-- removed (inactive) update mechanism for GeoIP data; this might reduce anonimity (#532373)
-- use pidfile at various places in the LSB initscript to operate on the correct process (#532373)
+- removed (inactive) update mechanism for GeoIP data; this might
+  reduce anonimity  (#532373)
+- use the pidfile at various places in the LSB initscript to operate
+  on the correct process (#532373)
 - set a higher 'nofile' limit in the upstart initscript to allow fast
   relays; LSB users will have to add a 'ulimit -n' into /etc/sysconfig/tor
   to get a similar effect (#532373)
+- let the LSB initscript wait until process exits within a certain
+  time; this fixes shutdown/restart problems when working as a server
+  (#532373)
+- fixed initng related typo in logrotate script (#532373)
+- enabled --enable-gcc-warnings ./configure option (#532373)
+- removed <linux/netfilter_ipv4.h> hack; it is fixed upstream and/or
+  in the kernel sources
 - use %%postun, not %%post as a -upstart scriptlet and send INT, not
   TERM signal to stop/restart daemon
-- let the LSB initscript wait until process within a certain time;
-  this fixes shutdown/restart problems when working as a server (#532373)
 
 * Sun Oct 25 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1
 - updated to 0.2.1.20
