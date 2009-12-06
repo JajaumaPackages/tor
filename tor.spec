@@ -13,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.1.20
-Release:	%release_func 1300
+Release:	%release_func 1301
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -62,8 +62,7 @@ Group:			System Environment/Base
 Source20:		%name.upstart
 Provides:		init(%name) = upstart
 Requires:		%name = %version-%release
-# implicates a conflict with upstart 0.5+
-Requires(pre):		/etc/event.d
+Requires(pre):		/etc/init
 Requires(post):		/usr/bin/killall
 Requires(postun):	/sbin/initctl
 %{?noarch}
@@ -135,7 +134,7 @@ mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%
 install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
 install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
-install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/event.d/tor
+install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/init/tor
 
 
 %pre core
@@ -222,10 +221,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files upstart
 %defattr(-,root,root,-)
-%config(noreplace) /etc/event.d/*
+%config(noreplace) /etc/init/*
 
 
 %changelog
+* Sun Dec  6 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1301
+- updated -upstart to upstart 0.6.3
+
 * Sat Nov 14 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1300
 - updated URLs (#532373)
 - removed (inactive) update mechanism for GeoIP data; this might
