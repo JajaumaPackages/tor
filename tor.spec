@@ -134,7 +134,7 @@ mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%
 install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
 install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
-install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/init/tor
+install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/init/tor.conf
 
 
 %pre core
