@@ -1,10 +1,8 @@
 ### Uncomment matching 'start' lines below.
 
-#start on starting local
+#start on runlevel [345] and starting local
 
-stop  on (runlevel 0 or
-          runlevel 1 or
-          runlevel 6)
+stop  on runlevel [!345]
 
 limit nofile 4096
 
