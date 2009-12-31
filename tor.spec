@@ -12,8 +12,8 @@
 %{!?release_func:%global release_func() %1%{?dist}}
 
 Name:		tor
-Version:	0.2.1.20
-Release:	%release_func 1301
+Version:	0.2.1.21
+Release:	%release_func 1300
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -225,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Dec 31 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.21-1300
+- updated to 0.2.1.21
+
 * Sun Dec  6 2009 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.20-1301
 - updated -upstart to upstart 0.6.3
 
