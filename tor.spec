@@ -13,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.1.24
-Release:	%release_func 1400
+Release:	%release_func 1401
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -61,7 +61,7 @@ Summary:		upstart initscripts for %name
 Group:			System Environment/Base
 Source20:		%name.upstart
 Provides:		init(%name) = upstart
-Requires:		%name = %version-%release
+Requires:		%name-core = %version-%release
 Requires(pre):		/etc/init
 Requires(post):		/usr/bin/killall
 Requires(postun):	/sbin/initctl
@@ -225,6 +225,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar  2 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.24-1401
+- require tor-core, not tor in -upstart (thx to Dave Jones)
+
 * Sat Feb 27 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.24-1400
 - updated to 0.2.1.24
 
