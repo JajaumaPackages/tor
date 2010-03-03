@@ -13,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.1.24
-Release:	%release_func 1401
+Release:	%release_func 1402
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -129,7 +129,7 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 
-mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%_var/run/%name,%_var/lib/tor-data}
+mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%_var/run/%name}
 
 install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
 install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
@@ -206,7 +206,6 @@ rm -rf $RPM_BUILD_ROOT
 %_bindir/*
 %_mandir/man1/*
 %_datadir/tor
-%dir %_var/lib/tor-data
 
 %exclude %_bindir/torify
 %exclude %_mandir/man1/torify*
@@ -225,6 +224,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar  3 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.24-1402
+- removed /var/lib/tor-data dir (Chen Lei)
+
 * Tue Mar  2 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.24-1401
 - require tor-core, not tor in -upstart (thx to Dave Jones)
 
