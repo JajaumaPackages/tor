@@ -1,0 +1,84 @@
+#!/bin/bash
+#
+# Init file for tor - An Anonymizing overlay network for TCP
+#
+# chkconfig: - 99 01
+# description:   An Anonymizing overlay network for TCP
+#
+
+. /etc/rc.d/init.d/functions
+
+f=/etc/sysconfig/tor
+
+TOR_SHUTDOWN_WAIT=30
+TOR_OPTS=--quiet
+TOR_PIDFILE=/var/run/tor/tor.pid
+TOR_USER=toranon
+test ! -r "$f" || . "$f"
+
+prog="/usr/bin/tor"
+
+lockfile=/var/lock/subsys/tor
+pidfile=$TOR_PIDFILE
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon --pidfile="$pidfile" $prog --PIDFile "$pidfile" --RunAsDaemon 1 $TOR_OPTS || failure
+    rc=$?
+    test $rc -ne 0 || touch $lockfile
+    return $rc
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    if ! killproc -p "$pidfile" $prog -INT; then
+	failure
+    else
+	cnt=$TOR_SHUTDOWN_WAIT
+	while let '--cnt > 0' && killproc -p "$pidfile" $prog -0; do
+	    sleep 1
+	done
+
+	if test $cnt -ne 0 || killproc -p "$pidfile" $prog; then
+	    success
+	else
+	    failure
+	fi
+    fi
+
+    rm -f $pidfile $lockfile
+}
+
+restart() {
+    stop
+    start
+}
+
+reload() {
+    echo -n $"Reloading $prog: "
+    killproc -p "$pidfile" $prog -HUP && success || failure || return 7
+}
+
+_status() {
+    status -p $pidfile $prog
+}
+
+case $1 in
+    (start|stop|reload|restart)
+	$1
+	;;
+    (force-reload)
+	restart
+	;;
+    (status)
+	_status
+	;;
+    (condrestart|try-restart)
+	if _status &>/dev/null; then
+	    restart
+	fi
+	;;
+    (*)
+	echo $"Usage: $0 {start|stop|force-reload|reload|try-restart|status}"
+	exit 3
+esac

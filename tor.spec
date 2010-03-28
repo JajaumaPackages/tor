@@ -9,7 +9,7 @@
 %global logdir			%_var/log/%name
 
 %{?with_noarch:%global noarch	BuildArch:	noarch}
-%{!?release_func:%global release_func() %1%{?dist}}
+%{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 
 Name:		tor
 Version:	0.2.1.25
@@ -47,12 +47,28 @@ Requires(postun):	/etc/logrotate.d
 Summary:	LSB initscripts for tor
 Group:		System Environment/Daemons
 Provides:	init(%name) = lsb
+Conflicts:	init(%name) = sysv
 Requires:	%name-core =  %version-%release
 Source10:	tor.lsb
 Requires(pre):		%name-core
 Requires(postun):	lsb-core-noarch %name-core
 Requires(post):		lsb-core-noarch
 Requires(preun):	lsb-core-noarch
+%{?noarch}
+
+
+%package sysv
+Summary:	Tor initscripts for Red Hat's proprietary initsystem
+Group:		System Environment/Daemons
+Provides:	init(%name) = sysv
+Conflicts:	init(%name) = lsb
+Requires:	%name-core =  %version-%release
+Source30:	tor.sysv
+Requires(pre):		%name-core
+Requires(post): chkconfig
+Requires(preun): chkconfig
+# This is for /sbin/service
+Requires(preun): initscripts
 %{?noarch}
 
 
@@ -99,6 +115,13 @@ Tor is a connection-based low-latency anonymous communication system.
 
 This package contains the LSB compliant initscripts to start the "tor"
 daemon.
+
+
+%description sysv
+Tor is a connection-based low-latency anonymous communication system.
+
+This package contains the initscripts to start the "tor" daemon with
+Red Hat's proprietary initsystem.
 
 
 %description upstart
@@ -165,6 +188,16 @@ test "$1" != 0 || /usr/lib/lsb/remove_initd %_initrddir/tor
 test "$1"  = 0 || env -i %_initrddir/tor try-restart &>/dev/null
 
 
+%post sysv
+# This adds the proper /etc/rc*.d links for the script
+/sbin/chkconfig --add <script>
+
+%preun sysv
+if [ $1 = 0 ] ; then
+    /sbin/service <script> stop >/dev/null 2>&1
+    /sbin/chkconfig --del <script>
+fi
+
 %postun upstart
 /usr/bin/killall -u %username -s INT tor 2>/dev/null || :
 
@@ -224,6 +257,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar 28 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+- added -sysv subpackage
+
 * Thu Mar 18 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.25-1400
 - updated to 0.2.1.25
 
