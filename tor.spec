@@ -12,7 +12,7 @@
 %{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 
 Name:		tor
-Version:	0.2.1.25
+Version:	0.2.1.26
 Release:	%release_func 1400
 Group:		System Environment/Daemons
 License:	BSD
@@ -150,6 +150,7 @@ daemon.
 
 sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
 cat <<EOF >>src/config/torrc.sample.in
+Log notice syslog
 User  %username
 EOF
 
@@ -186,14 +187,7 @@ install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/init/tor.conf
 
 
 %post lsb
-/usr/lib/lsb/install_initd %_initrddir/tor || {
-	cat <<EOF >&2
-oouch... redhat-lsb is still broken. See the report
-https://bugzilla.redhat.com/show_bug.cgi?id=522053
-for details.
-EOF
-	/sbin/chkconfig --add tor
-}
+/usr/lib/lsb/install_initd %_initrddir/tor
 
 %preun lsb
 test "$1" != 0 || %_initrddir/tor stop &>/dev/null || :
@@ -281,6 +275,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun  1 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.26-1400
+- updated to 0.2.1.26
+- log to syslog as request by upstream (#532373#19)
+- removed workaround to install lsb initscript because parts of the
+  underlying problem have been fixed in redhat-lsb and the remaining
+  ones were solved by previous commit
+- removed $local_fs dependency in -lsb initscript to workaround
+  buggy redhat-lsb; $remote_fs should imply it and has been moved to
+  Should-Start:
+
 * Tue Jun  1 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
 - created -doc subpackage and moved most (all) files from main into it
 

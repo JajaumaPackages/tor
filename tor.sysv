@@ -78,7 +78,9 @@ case $1 in
 	    restart
 	fi
 	;;
+    (-*)
+	exit 2
     (*)
-	echo $"Usage: $0 {start|stop|force-reload|reload|try-restart|status}"
+	echo $"Usage: $0 {start|stop|force-reload|reload|try-restart|status}" >&2
 	exit 3
 esac

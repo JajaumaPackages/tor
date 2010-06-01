@@ -9,8 +9,8 @@
 # Default-Stop:		0 1 2 6
 # Short-Description:	An Anonymizing overlay network for TCP
 # Description:		An Anonymizing overlay network for TCP
-# Required-Start:	$network $remote_fs $local_fs
-# Should-Start:		$syslog $time
+# Required-Start:	$network
+# Should-Start:		$syslog $time $remote_fs
 ### END INIT INFO
 
 . /lib/lsb/init-functions
