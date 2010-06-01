@@ -43,6 +43,13 @@ Requires(postun):	/etc/logrotate.d
 %{?FE_USERADD_REQ}
 
 
+%package doc
+Summary:	Documentation for tor
+Group:		System Environment/Daemons
+Requires:	%name-core = %version-%release
+%{?noarch}
+
+
 %package lsb
 Summary:	LSB initscripts for tor
 Group:		System Environment/Daemons
@@ -69,6 +76,8 @@ Requires(post): chkconfig
 Requires(preun): chkconfig
 # This is for /sbin/service
 Requires(preun): initscripts
+# This is for /sbin/service
+Requires(postun): initscripts
 %{?noarch}
 
 
@@ -108,6 +117,12 @@ Tor is a connection-based low-latency anonymous communication system.
 
 This package provides the "tor" program, which serves as both a client
 and a relay node.
+
+
+%description doc
+Tor is a connection-based low-latency anonymous communication system.
+
+This package provides documentation for "tor".
 
 
 %description lsb
@@ -198,6 +213,12 @@ if [ $1 = 0 ] ; then
     /sbin/chkconfig --del <script>
 fi
 
+%postun sysv
+if [ "$1" -ge "1" ] ; then
+    /sbin/service <script> condrestart >/dev/null 2>&1 || :
+fi
+
+
 %postun upstart
 /usr/bin/killall -u %username -s INT tor 2>/dev/null || :
 
@@ -210,6 +231,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files
+
+
+%files doc
 %defattr(-,root,root,-)
 %doc doc/HACKING
 %doc doc/spec/*.txt
@@ -257,6 +281,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun  1 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+- created -doc subpackage and moved most (all) files from main into it
+
 * Sun Mar 28 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
 - added -sysv subpackage
 
