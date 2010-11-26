@@ -169,13 +169,13 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 
-mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%_var/run/%name}
+mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir,%_var/run/%name}
 
-install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
+install -D -p -m 0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/%name
 install -D -p -m 0755 %SOURCE11 $RPM_BUILD_ROOT%_sysconfdir/tmpfiles.d/%name.conf
-install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
+install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
-install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/init/tor.conf
+install -D -p -m 0644 %SOURCE20 $RPM_BUILD_ROOT%_sysconfdir/init/tor.conf
 
 
 %pre core
