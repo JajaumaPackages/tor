@@ -57,6 +57,7 @@ Provides:	init(%name) = lsb
 Conflicts:	init(%name) = sysv
 Requires:	%name-core =  %version-%release
 Source10:	tor.lsb
+Source11:	tor.tmpfiles
 Requires(pre):		%name-core
 Requires(postun):	lsb-core-noarch %name-core
 Requires(post):		lsb-core-noarch
@@ -171,6 +172,7 @@ mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 mkdir -p $RPM_BUILD_ROOT{%_sysconfdir/logrotate.d,%_initrddir,%logdir,%homedir,%_var/run/%name}
 
 install -p -m0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/tor
+install -D -p -m 0755 %SOURCE11 $RPM_BUILD_ROOT%_sysconfdir/tmpfiles.d/%name.conf
 install -p -m0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
 install -pD -m 0644 %SOURCE20 $RPM_BUILD_ROOT/etc/init/tor.conf
@@ -253,9 +255,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files lsb
-  %defattr(-,root,root,-)
-  %config %_initrddir/*
-  %attr(0755,%username,%username) %dir %_var/run/%name
+%defattr(-,root,root,-)
+%config %_initrddir/*
+%config %_sysconfdir/tmpfiles.d/%name.conf
+%ghost %attr(0755,%username,%username) %dir %_var/run/%name
 
 
 %files upstart
@@ -266,6 +269,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.27-1500
 - updated to 0.2.1.27
+- added tmpfiles.d file to create %%_var/run/%%name directory in -lsb
 
 * Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.26-1500
 - fixed 'limit' statement in upstart script
