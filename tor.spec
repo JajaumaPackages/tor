@@ -12,8 +12,8 @@
 %{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 
 Name:		tor
-Version:	0.2.1.26
-Release:	%release_func 1400
+Version:	0.2.1.27
+Release:	%release_func 1500
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -232,17 +232,6 @@ rm -rf $RPM_BUILD_ROOT
 %doc doc/HACKING
 %doc doc/spec/*.txt
 %doc doc/design-paper/tor-design.pdf
-%doc %lang(de) doc/website/*.de
-%doc %lang(en) doc/website/*.en
-%doc %lang(es) doc/website/*.es
-%doc %lang(fr) doc/website/*.fr
-%doc %lang(it) doc/website/*.it
-%doc %lang(ko) doc/website/*.ko
-%doc %lang(pl) doc/website/*.pl
-%doc %lang(pt) doc/website/*.pt
-%doc %lang(ru) doc/website/*.ru
-%doc %lang(zh-cn) doc/website/*.zh-cn
-%doc doc/website/*.css
 
 
 %files core
@@ -275,6 +264,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.27-1500
+- updated to 0.2.1.27
+
 * Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.26-1500
 - fixed 'limit' statement in upstart script
 
