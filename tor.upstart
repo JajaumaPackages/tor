@@ -4,7 +4,7 @@
 
 stop  on runlevel [!345]
 
-limit nofile 4096
+limit nofile 4096 4096
 
 respawn
 exec /usr/bin/tor --quiet

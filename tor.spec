@@ -275,6 +275,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.26-1500
+- fixed 'limit' statement in upstart script
+
 * Tue Jun  1 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.26-1400
 - updated to 0.2.1.26
 - log to syslog as request by upstream (#532373#19)
