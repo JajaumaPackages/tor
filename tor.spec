@@ -270,6 +270,7 @@ rm -rf $RPM_BUILD_ROOT
 * Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.27-1500
 - updated to 0.2.1.27
 - added tmpfiles.d file to create %%_var/run/%%name directory in -lsb
+- work around broken chkconfig by adding dummy Default-Start: in -lsb
 
 * Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.26-1500
 - fixed 'limit' statement in upstart script
