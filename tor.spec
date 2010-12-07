@@ -8,12 +8,13 @@
 %global homedir			%_var/lib/%name
 %global logdir			%_var/log/%name
 
+%{!?_unitdir:%global _unitdir /lib/systemd/system}
 %{?with_noarch:%global noarch	BuildArch:	noarch}
 %{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 
 Name:		tor
 Version:	0.2.1.27
-Release:	%release_func 1500
+Release:	%release_func 1501
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -50,36 +51,20 @@ Requires:	%name-core = %version-%release
 %{?noarch}
 
 
-%package lsb
-Summary:	LSB initscripts for tor
+%package systemd
+Summary:	Systemd initscripts for tor
 Group:		System Environment/Daemons
-Provides:	init(%name) = lsb
-Conflicts:	init(%name) = sysv
-Requires:	%name-core =  %version-%release
-Source10:	tor.lsb
-Source11:	tor.tmpfiles
-Requires(pre):		%name-core
-Requires(postun):	lsb-core-noarch %name-core
-Requires(post):		lsb-core-noarch
-Requires(preun):	lsb-core-noarch
-%{?noarch}
+Source10:	tor.systemd.service
+Provides:	init(%name) = systemd
+Requires(post):		/bin/systemctl
+Requires(preun):	/bin/systemctl
+Requires(postun):	/bin/systemctl
 
-
-%package sysv
-Summary:	Tor initscripts for Red Hat's proprietary initsystem
-Group:		System Environment/Daemons
-Provides:	init(%name) = sysv
-Conflicts:	init(%name) = lsb
-Requires:	%name-core =  %version-%release
-Source30:	tor.sysv
-Requires(pre):		%name-core
-Requires(post): chkconfig
-Requires(preun): chkconfig
-# This is for /sbin/service
-Requires(preun): initscripts
-# This is for /sbin/service
-Requires(postun): initscripts
-%{?noarch}
+# TODO: remove me in F17
+Obsoletes:	%name-lsb < %version-%release
+Provides:	%name-lsb = %version-%release
+Obsoletes:	%name-sysv < %version-%release
+Provides:	%name-sysv = %version-%release
 
 
 %package upstart
@@ -126,18 +111,11 @@ Tor is a connection-based low-latency anonymous communication system.
 This package provides documentation for "tor".
 
 
-%description lsb
+%description systemd
 Tor is a connection-based low-latency anonymous communication system.
 
-This package contains the LSB compliant initscripts to start the "tor"
+This package contains the systemd initscripts to start the "tor"
 daemon.
-
-
-%description sysv
-Tor is a connection-based low-latency anonymous communication system.
-
-This package contains the initscripts to start the "tor" daemon with
-Red Hat's proprietary initsystem.
 
 
 %description upstart
@@ -145,6 +123,7 @@ Tor is a connection-based low-latency anonymous communication system.
 
 This package contains the upstart compliant initscripts to start the "tor"
 daemon.
+
 
 %prep
 %setup -q
@@ -171,8 +150,7 @@ mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 
 mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir,%_var/run/%name}
 
-install -D -p -m 0755 %SOURCE10 $RPM_BUILD_ROOT%_initrddir/%name
-install -D -p -m 0755 %SOURCE11 $RPM_BUILD_ROOT%_sysconfdir/tmpfiles.d/%name.conf
+install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
 install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
 install -D -p -m 0644 %SOURCE20 $RPM_BUILD_ROOT%_sysconfdir/init/tor.conf
@@ -188,31 +166,16 @@ install -D -p -m 0644 %SOURCE20 $RPM_BUILD_ROOT%_sysconfdir/init/tor.conf
 %__fe_groupdel %username &>/dev/null || :
 
 
-%post lsb
-/usr/lib/lsb/install_initd %_initrddir/tor
+%post systemd
+test "$1" -ne 1 || /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 
-%preun lsb
-test "$1" != 0 || %_initrddir/tor stop &>/dev/null || :
-test "$1" != 0 || /usr/lib/lsb/remove_initd %_initrddir/tor
+%preun systemd
+test "$1" -ne 1 || /bin/systemctl disable %name.service > /dev/null 2>&1 || :
+test "$1" -ne 1 || /bin/systemctl stop    %name.service > /dev/null 2>&1 || :
 
-%postun lsb
-test "$1"  = 0 || env -i %_initrddir/tor try-restart &>/dev/null
-
-
-%post sysv
-# This adds the proper /etc/rc*.d links for the script
-/sbin/chkconfig --add <script>
-
-%preun sysv
-if [ $1 = 0 ] ; then
-    /sbin/service <script> stop >/dev/null 2>&1
-    /sbin/chkconfig --del <script>
-fi
-
-%postun sysv
-if [ "$1" -ge "1" ] ; then
-    /sbin/service <script> condrestart >/dev/null 2>&1 || :
-fi
+%postun systemd
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+test "$1" -eq 1 || /bin/systemctl try-restart %name.service >/dev/null 2>&1 || :
 
 
 %postun upstart
@@ -254,11 +217,9 @@ rm -rf $RPM_BUILD_ROOT
 %exclude %_sysconfdir/tor/tor-tsocks.conf
 
 
-%files lsb
+%files systemd
 %defattr(-,root,root,-)
-%config %_initrddir/*
-%config %_sysconfdir/tmpfiles.d/%name.conf
-%ghost %attr(0755,%username,%username) %dir %_var/run/%name
+%_unitdir/%name.service
 
 
 %files upstart
@@ -267,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec  7 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.27-1501
+- replaced lsb and sysv init stuff with systemd init script
+
 * Fri Nov 26 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.27-1500
 - updated to 0.2.1.27
 - added tmpfiles.d file to create %%_var/run/%%name directory in -lsb
