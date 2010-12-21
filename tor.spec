@@ -13,8 +13,8 @@
 %{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 
 Name:		tor
-Version:	0.2.1.27
-Release:	%release_func 1501
+Version:	0.2.1.28
+Release:	%release_func 1600
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -228,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Dec 21 2010 Luke Macken <lmacken@redhat.com> - 0.2.1.28-1600
+- updated to 0.2.1.28 (SECURITY: fixes a remotely exploitable heap overflow bug)
+
 * Tue Dec  7 2010 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.27-1501
 - replaced lsb and sysv init stuff with systemd init script
 
