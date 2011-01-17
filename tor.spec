@@ -13,14 +13,14 @@
 %{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 
 Name:		tor
-Version:	0.2.1.28
-Release:	%release_func 1502
+Version:	0.2.1.29
+Release:	%release_func 1500
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
 URL:		http://tor.eff.org
 Requires:	%name-core = %version-%release
-Requires:	%name-lsb  = %version-%release
+Requires:	%name-systemd  = %version-%release
 
 
 %package core
@@ -228,6 +228,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.29-1500
+- updated to 0.2.1.29 (SECURITY)
+- CVE-2011-0427: heap overflow bug, potential remote code execution
+
 * Tue Dec 21 2010 Luke Macken <lmacken@redhat.com> - 0.2.1.28-1502
 - updated to 0.2.1.28 (SECURITY: fixes a remotely exploitable heap overflow bug)
 
