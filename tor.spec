@@ -14,7 +14,7 @@
 
 Name:		tor
 Version:	0.2.1.29
-Release:	%release_func 1500
+Release:	%release_func 1501
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -228,6 +228,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.1.29-1501
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Mon Jan 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.29-1500
 - updated to 0.2.1.29 (SECURITY)
 - CVE-2011-0427: heap overflow bug, potential remote code execution
