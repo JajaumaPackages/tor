@@ -44,6 +44,16 @@ Requires(postun):	/etc/logrotate.d
 %{?FE_USERADD_REQ}
 
 
+%package -n torify
+Summary:	The torify wrapper script
+Group:		System Environment/Daemons
+Requires:	tsocks
+# Prevent version mix
+Conflicts:	%name-core < %version-%release
+Conflicts:	%name-core > %version-%release
+%{?noarch}
+
+
 %package doc
 Summary:	Documentation for tor
 Group:		System Environment/Daemons
@@ -103,6 +113,12 @@ Tor is a connection-based low-latency anonymous communication system.
 
 This package provides the "tor" program, which serves as both a client
 and a relay node.
+
+
+%description -n torify
+Tor is a connection-based low-latency anonymous communication system.
+
+This package contains the "torify" wrapper script.
 
 
 %description doc
@@ -211,9 +227,13 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man1/*
 %_datadir/tor
 
-%exclude %_bindir/torify
-%exclude %_mandir/man1/torify*
-%exclude %_sysconfdir/tor/tor-tsocks.conf
+
+%files -n torify
+%defattr(-,root,root,-)
+%_bindir/torify
+%_mandir/man1/torify*
+%dir               %_sysconfdir/tor
+%config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 
 
 %files systemd
@@ -229,6 +249,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Mon Feb 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1600
 - updated to 0.2.1.30
+- added 'torify' script (#669684)
 
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.1.29-1501
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
