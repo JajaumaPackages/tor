@@ -13,8 +13,8 @@
 %{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 
 Name:		tor
-Version:	0.2.1.29
-Release:	%release_func 1501
+Version:	0.2.1.30
+Release:	%release_func 1600
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -195,7 +195,6 @@ rm -rf $RPM_BUILD_ROOT
 %files doc
 %defattr(-,root,root,-)
 %doc doc/HACKING
-%doc doc/spec/*.txt
 %doc doc/design-paper/tor-design.pdf
 
 
@@ -228,6 +227,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1600
+- updated to 0.2.1.30
+
 * Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.1.29-1501
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
