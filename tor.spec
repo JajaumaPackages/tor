@@ -247,6 +247,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Mar 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+- made EnvironmentFile in systemd definition optional
+
 * Mon Feb 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1600
 - updated to 0.2.1.30
 - added 'torify' script (#669684)

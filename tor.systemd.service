@@ -5,7 +5,7 @@ After = syslog.target
 [Service]
 Environment = TOR_SHUTDOWN_WAIT=30
 Environment = TOR_NOFILE=4096
-EnvironmentFile = /etc/sysconfig/tor
+EnvironmentFile = -/etc/sysconfig/tor
 
 Type = simple
 ExecStart = /usr/bin/tor --quiet
