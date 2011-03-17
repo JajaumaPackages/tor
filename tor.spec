@@ -66,6 +66,7 @@ Summary:	Systemd initscripts for tor
 Group:		System Environment/Daemons
 Source10:	tor.systemd.service
 Provides:	init(%name) = systemd
+Requires:	%name-core = %version-%release
 Requires(post):		/bin/systemctl
 Requires(preun):	/bin/systemctl
 Requires(postun):	/bin/systemctl
@@ -75,6 +76,7 @@ Obsoletes:	%name-lsb < %version-%release
 Provides:	%name-lsb = %version-%release
 Obsoletes:	%name-sysv < %version-%release
 Provides:	%name-sysv = %version-%release
+%{?noarch}
 
 
 %package upstart
@@ -249,6 +251,7 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Thu Mar 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1601
 - made EnvironmentFile in systemd definition optional
+- systemd: added Requires: for core package; made it noarch
 
 * Mon Feb 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1600
 - updated to 0.2.1.30
