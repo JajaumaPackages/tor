@@ -14,7 +14,7 @@
 
 Name:		tor
 Version:	0.2.1.30
-Release:	%release_func 1600
+Release:	%release_func 1601
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -247,7 +247,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Thu Mar 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+* Thu Mar 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1601
 - made EnvironmentFile in systemd definition optional
 
 * Mon Feb 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1600
