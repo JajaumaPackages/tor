@@ -14,7 +14,7 @@
 
 Name:		tor
 Version:	0.2.1.30
-Release:	%release_func 1601
+Release:	%release_func 1700
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
