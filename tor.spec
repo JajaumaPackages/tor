@@ -249,6 +249,7 @@ rm -rf $RPM_BUILD_ROOT
 - removed -doc subpackage because shipped files are not available
   anymore
 - ship torify files only in torify subpackage; not in main one
+- start systemd service after nss-lookup.target (#719476)
 
 * Thu Jul 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1700
 - added and use systemd macros
