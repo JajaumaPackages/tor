@@ -11,6 +11,22 @@
 %{!?_unitdir:%global _unitdir /lib/systemd/system}
 %{?with_noarch:%global noarch	BuildArch:	noarch}
 %{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
+%{!?systemd_reqs:%global systemd_reqs \
+Requires(post):		 /bin/systemctl\
+Requires(preun):	 /bin/systemctl\
+Requires(postun):	 /bin/systemctl\
+%nil}
+%{!?systemd_install:%global systemd_install()\
+%post %1\
+test "$1" != "1" || /bin/systemctl daemon-reload >/dev/null 2>&1 || :\
+%preun %1\
+test "$1" != "0" || /bin/systemctl --no-reload disable %2 >/dev/null 2>&1 || :\
+test "$1" != "0" || /bin/systemctl stop %2 >/dev/null 2>&1 || :\
+%postun %1\
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :\
+test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
+%nil}
+
 
 Name:		tor
 Version:	0.2.1.30
@@ -67,9 +83,7 @@ Group:		System Environment/Daemons
 Source10:	tor.systemd.service
 Provides:	init(%name) = systemd
 Requires:	%name-core = %version-%release
-Requires(post):		/bin/systemctl
-Requires(preun):	/bin/systemctl
-Requires(postun):	/bin/systemctl
+%{?systemd_reqs}
 
 # TODO: remove me in F17
 Obsoletes:	%name-lsb < %version-%release
@@ -184,16 +198,7 @@ install -D -p -m 0644 %SOURCE20 $RPM_BUILD_ROOT%_sysconfdir/init/tor.conf
 %__fe_groupdel %username &>/dev/null || :
 
 
-%post systemd
-test "$1" -ne 1 || /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-
-%preun systemd
-test "$1" -ne 1 || /bin/systemctl disable %name.service > /dev/null 2>&1 || :
-test "$1" -ne 1 || /bin/systemctl stop    %name.service > /dev/null 2>&1 || :
-
-%postun systemd
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-test "$1" -eq 1 || /bin/systemctl try-restart %name.service >/dev/null 2>&1 || :
+%systemd_install systemd %name.service
 
 
 %postun upstart
@@ -249,6 +254,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jul 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1700
+- added and use systemd macros
+
 * Thu Mar 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1601
 - made EnvironmentFile in systemd definition optional
 - systemd: added Requires: for core package; made it noarch
