@@ -29,7 +29,7 @@ test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
 
 
 Name:		tor
-Version:	0.2.1.30
+Version:	0.2.2.33
 Release:	%release_func 1700
 Group:		System Environment/Daemons
 License:	BSD
@@ -48,9 +48,10 @@ Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
 BuildRoot:	%_tmppath/%name-%version-%release-root
 
-BuildRequires:	libevent-devel openssl-devel transfig ghostscript
-BuildRequires:	/usr/bin/latex
-BuildRequires:	texlive-texmf-fonts
+# tor-design.pdf is not shipped anymore with tor
+Obsoletes:	tor-doc < 0.2.2
+
+BuildRequires:	libevent-devel openssl-devel
 BuildRequires:	fedora-usermgmt-devel
 Provides:		user(%username)  = %uid
 Provides:		group(%username) = %uid
@@ -67,13 +68,6 @@ Requires:	tsocks
 # Prevent version mix
 Conflicts:	%name-core < %version-%release
 Conflicts:	%name-core > %version-%release
-%{?noarch}
-
-
-%package doc
-Summary:	Documentation for tor
-Group:		System Environment/Daemons
-Requires:	%name-core = %version-%release
 %{?noarch}
 
 
@@ -137,12 +131,6 @@ Tor is a connection-based low-latency anonymous communication system.
 This package contains the "torify" wrapper script.
 
 
-%description doc
-Tor is a connection-based low-latency anonymous communication system.
-
-This package provides documentation for "tor".
-
-
 %description systemd
 Tor is a connection-based low-latency anonymous communication system.
 
@@ -171,11 +159,10 @@ EOF
 export LDFLAGS='-Wl,--as-needed'
 %configure
 make %{?_smp_mflags}
-make -C doc/design-paper tor-design.pdf
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT _doc _doc-torify
 
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
@@ -186,6 +173,10 @@ install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
 install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
 install -D -p -m 0644 %SOURCE20 $RPM_BUILD_ROOT%_sysconfdir/init/tor.conf
+
+mv $RPM_BUILD_ROOT%_datadir/doc/tor _doc
+mkdir _doc-torify
+mv _doc/torify.html _doc-torify
 
 
 %pre core
@@ -215,16 +206,11 @@ rm -rf $RPM_BUILD_ROOT
 %files
 
 
-%files doc
-%defattr(-,root,root,-)
-%doc doc/HACKING
-%doc doc/design-paper/tor-design.pdf
-
-
 %files core
 %defattr(-,root,root,-)
-%doc AUTHORS LICENSE README ChangeLog
+%doc LICENSE README ChangeLog
 %doc ReleaseNotes
+%doc _doc/*
 %dir               %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%username,%username) %dir %homedir
@@ -237,6 +223,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n torify
 %defattr(-,root,root,-)
+%doc _doc-torify/*
 %_bindir/torify
 %_mandir/man1/torify*
 %dir               %_sysconfdir/tor
@@ -254,6 +241,11 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Sep 18 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.33-1700
+- updated to 2.2.33
+- removed -doc subpackage because shipped files are not available
+  anymore
+
 * Thu Jul 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1700
 - added and use systemd macros
 
