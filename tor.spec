@@ -220,6 +220,9 @@ rm -rf $RPM_BUILD_ROOT
 %_mandir/man1/*
 %_datadir/tor
 
+%exclude %_mandir/man1/torify*
+%exclude %_bindir/torify
+
 
 %files -n torify
 %defattr(-,root,root,-)
@@ -245,6 +248,7 @@ rm -rf $RPM_BUILD_ROOT
 - updated to 2.2.33
 - removed -doc subpackage because shipped files are not available
   anymore
+- ship torify files only in torify subpackage; not in main one
 
 * Thu Jul 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.1.30-1700
 - added and use systemd macros
