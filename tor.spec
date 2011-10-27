@@ -30,7 +30,7 @@ test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
 
 Name:		tor
 Version:	0.2.2.33
-Release:	%release_func 1700
+Release:	%release_func 1701
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -244,6 +244,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.2.33-1701
+- Rebuilt for glibc bug#747377
+
 * Sun Sep 18 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.33-1700
 - updated to 2.2.33
 - removed -doc subpackage because shipped files are not available
