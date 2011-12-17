@@ -29,7 +29,7 @@ test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
 
 
 Name:		tor
-Version:	0.2.2.34
+Version:	0.2.2.35
 Release:	%release_func 1700
 Group:		System Environment/Daemons
 License:	BSD
@@ -244,6 +244,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.35-1700
+- updated to 0.2.2.35 (security)
+- CVE-2011-2778: Tor heap-based buffer overflow
+
 * Fri Oct 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.34-1700
 - updated to 0.2.2.34; critical privacy/anonymity fixes
 - CVE-2011-2768
