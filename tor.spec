@@ -246,6 +246,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Fri Oct 28 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.34-1700
 - updated to 0.2.2.34; critical privacy/anonymity fixes
+- CVE-2011-2768
+- CVE-2011-2769
 
 * Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.2.33-1701
 - Rebuilt for glibc bug#747377
