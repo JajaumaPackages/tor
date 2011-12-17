@@ -1,4 +1,5 @@
 /var/log/tor/*.log {
+	su toranon toranon
 	delaycompress
 	notifempty
 	sharedscripts
