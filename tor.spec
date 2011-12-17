@@ -30,7 +30,7 @@ test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
 
 Name:		tor
 Version:	0.2.2.35
-Release:	%release_func 1700
+Release:	%release_func 1701
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -244,6 +244,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Dec 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.35-1701
+
 * Sat Dec 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.35-1700
 - updated to 0.2.2.35 (security)
 - CVE-2011-2778: Tor heap-based buffer overflow
