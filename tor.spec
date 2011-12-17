@@ -249,6 +249,7 @@ rm -rf $RPM_BUILD_ROOT
 - fixed systemd unit file; customization of TimeoutSec + LimitNOFILE is
   not possible by environment variables. Hardcode some values which can
   be overridden by the systemd .include method (#755167).
+- added systemd rule in the postrotate script
 
 * Sat Dec 17 2011 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.35-1700
 - updated to 0.2.2.35 (security)
