@@ -34,7 +34,7 @@ Release:	%release_func 1702
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
-URL:		http://tor.eff.org
+URL:		http://www.torproject.org
 Requires:	%name-core = %version-%release
 Requires:	%name-systemd  = %version-%release
 
@@ -42,7 +42,6 @@ Requires:	%name-systemd  = %version-%release
 %package core
 Summary:	Core programs for tor
 Group:		System Environment/Daemons
-URL:		http://www.torproject.org
 Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
 Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
@@ -244,6 +243,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Mar  6 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+- fixed urls (#800236)
+
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.2.35-1702
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
