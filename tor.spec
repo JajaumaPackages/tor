@@ -2,6 +2,7 @@
 %bcond_without		fedora
 %bcond_without		noarch
 
+%global _hardened_build	1
 
 %global username		toranon
 %global uid			19
@@ -30,7 +31,7 @@ test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
 
 Name:		tor
 Version:	0.2.2.35
-Release:	%release_func 1702
+Release:	%release_func 1800
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -243,6 +244,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri Apr 13 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.35-1800
+- build with -fPIE
+
 * Tue Mar  6 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
 - fixed urls (#800236)
 
