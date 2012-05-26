@@ -78,12 +78,6 @@ Source10:	tor.systemd.service
 Provides:	init(%name) = systemd
 Requires:	%name-core = %version-%release
 %{?systemd_reqs}
-
-# TODO: remove me in F17
-Obsoletes:	%name-lsb < %version-%release
-Provides:	%name-lsb = %version-%release
-Obsoletes:	%name-sysv < %version-%release
-Provides:	%name-sysv = %version-%release
 %{?noarch}
 
 
