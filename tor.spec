@@ -30,7 +30,7 @@ test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
 
 
 Name:		tor
-Version:	0.2.2.36
+Version:	0.2.2.37
 Release:	%release_func 1800
 Group:		System Environment/Daemons
 License:	BSD
@@ -238,6 +238,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 12 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.37-1800
+- updated to 0.2.2.37
+
 * Sat May 26 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.36-1800
 - updated to 0.2.2.36
 
