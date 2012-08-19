@@ -1,6 +1,7 @@
 ## This package understands the following switches:
 %bcond_without		fedora
 %bcond_without		noarch
+%bcond_with		upstart
 
 %global _hardened_build	1
 
@@ -172,6 +173,8 @@ mv $RPM_BUILD_ROOT%_datadir/doc/tor _doc
 mkdir _doc-torify
 mv _doc/torify.html _doc-torify
 
+%{!?with_upstart:  rm -rf $RPM_BUILD_ROOT%_sysconfdir/init}
+
 
 %pre core
 %__fe_groupadd %uid -r %username &>/dev/null || :
@@ -232,14 +235,16 @@ rm -rf $RPM_BUILD_ROOT
 %_unitdir/%name.service
 
 
+%if 0%{?with_upstart:1}
 %files upstart
-%defattr(-,root,root,-)
-%config(noreplace) /etc/init/*
-
+  %defattr(-,root,root,-)
+  %config(noreplace) /etc/init/*
+%endif
 
 %changelog
 * Sun Aug 19 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.38-1900
 - updated to 0.2.2.38
+- conditionalized upstart and disabled it by default
 
 * Fri Jul 27 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.2.37-1801
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
