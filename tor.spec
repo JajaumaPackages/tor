@@ -20,13 +20,11 @@ Requires(postun):	 /bin/systemctl\
 %nil}
 %{!?systemd_install:%global systemd_install()\
 %post %1\
-test "$1" != "1" || /bin/systemctl daemon-reload >/dev/null 2>&1 || :\
+%systemd_post %2 \
 %preun %1\
-test "$1" != "0" || /bin/systemctl --no-reload disable %2 >/dev/null 2>&1 || :\
-test "$1" != "0" || /bin/systemctl stop %2 >/dev/null 2>&1 || :\
+%systemd_preun %2 \
 %postun %1\
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :\
-test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
+%systemd_postun_with_restart %2 \
 %nil}
 
 
@@ -247,6 +245,7 @@ rm -rf $RPM_BUILD_ROOT
 - CVE-2012-4419: assertion failure when comparing an address with port
   0 to an address policy
 - CVE-2012-4422: assertion failure in tor_timegm()
+- use %%systemd macros
 
 * Sun Aug 19 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.38-1900
 - updated to 0.2.2.38
