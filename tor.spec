@@ -31,7 +31,7 @@ test "$1" = "0" || /bin/systemctl try-restart %2 >/dev/null 2>&1 || :\
 
 
 Name:		tor
-Version:	0.2.2.38
+Version:	0.2.2.39
 Release:	%release_func 1900
 Group:		System Environment/Daemons
 License:	BSD
@@ -242,6 +242,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sat Sep 22 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.39-1900
+- updated to 0.2.2.29
+- CVE-2012-4419: assertion failure when comparing an address with port
+  0 to an address policy
+- CVE-2012-4422: assertion failure in tor_timegm()
+
 * Sun Aug 19 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.38-1900
 - updated to 0.2.2.38
 - conditionalized upstart and disabled it by default
