@@ -29,7 +29,7 @@ Requires(postun):	 /bin/systemctl\
 
 
 Name:		tor
-Version:	0.2.2.39
+Version:	0.2.3.25
 Release:	%release_func 1900
 Group:		System Environment/Daemons
 License:	BSD
@@ -240,6 +240,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Dec  9 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.3.25-1900
+- updated to 0.2.3.25
+
 * Sat Sep 22 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.2.39-1900
 - updated to 0.2.2.29
 - CVE-2012-4419: assertion failure when comparing an address with port
