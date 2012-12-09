@@ -50,7 +50,7 @@ BuildRoot:	%_tmppath/%name-%version-%release-root
 # tor-design.pdf is not shipped anymore with tor
 Obsoletes:	tor-doc < 0.2.2
 
-BuildRequires:	libevent-devel openssl-devel
+BuildRequires:	libevent-devel openssl-devel asciidoc
 BuildRequires:	fedora-usermgmt-devel
 Provides:		user(%username)  = %uid
 Provides:		group(%username) = %uid
