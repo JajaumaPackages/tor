@@ -1,94 +1,75 @@
 ## This package understands the following switches:
-%bcond_without		fedora
-%bcond_without		noarch
-%bcond_with		upstart
+%bcond_without      fedora
+%bcond_without      noarch
+%bcond_with         upstart
 
-%global _hardened_build	1
+%global _hardened_build 1
 
-%global username		toranon
-%global uid			19
-%global homedir			%_var/lib/%name
-%global logdir			%_var/log/%name
+%global username    toranon
+%global uid         19
+%global homedir     %_var/lib/%{name}
+%global logdir      %_var/log/%{name}
 
-%{!?_unitdir:%global _unitdir /lib/systemd/system}
-%{?with_noarch:%global noarch	BuildArch:	noarch}
-%{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
-%{!?systemd_reqs:%global systemd_reqs \
-Requires(post):		 /bin/systemctl\
-Requires(preun):	 /bin/systemctl\
-Requires(postun):	 /bin/systemctl\
-%nil}
-%{!?systemd_install:%global systemd_install()\
-%post %1\
-%systemd_post %2 \
-%preun %1\
-%systemd_preun %2 \
-%postun %1\
-%systemd_postun_with_restart %2 \
-%nil}
-
-
-Name:		tor
-Version:	0.2.3.25
-Release:	%release_func 1900
-Group:		System Environment/Daemons
-License:	BSD
-Summary:	Anonymizing overlay network for TCP (The onion router)
-URL:		http://www.torproject.org
-Requires:	%name-core = %version-%release
-Requires:	%name-systemd  = %version-%release
+Name:           tor
+Version:        0.2.3.25
+Release:        1901
+Group:          System Environment/Daemons
+License:        BSD
+Summary:        Anonymizing overlay network for TCP (The onion router)
+URL:            http://www.torproject.org
+Requires:       %{name}-core     = %{version}-%{release}
+Requires:       %{name}-systemd  = %{version}-%{release}
 
 
 %package core
-Summary:	Core programs for tor
-Group:		System Environment/Daemons
-Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
-Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
-Source2:	tor.logrotate
-BuildRoot:	%_tmppath/%name-%version-%release-root
+Summary:        Core programs for tor
+Group:          System Environment/Daemons
+Source0:        https://www.torproject.org/dist/%{name}-%{version}.tar.gz
+Source1:        https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
+Source2:        tor.logrotate
 
 # tor-design.pdf is not shipped anymore with tor
-Obsoletes:	tor-doc < 0.2.2
+Obsoletes:      tor-doc < 0.2.2
 
-BuildRequires:	libevent-devel openssl-devel asciidoc
-BuildRequires:	fedora-usermgmt-devel
-Provides:		user(%username)  = %uid
-Provides:		group(%username) = %uid
-Requires:		init(%name)
-Requires(pre):		/etc/logrotate.d
-Requires(postun):	/etc/logrotate.d
+BuildRequires:  libevent-devel openssl-devel asciidoc
+BuildRequires:  fedora-usermgmt-devel
+Provides:       user(%{username})  = %uid
+Provides:       group(%{username}) = %uid
+Requires:       init(%{name})
+Requires(pre):     /etc/logrotate.d
+Requires(postun):  /etc/logrotate.d
 %{?FE_USERADD_REQ}
 
 
 %package -n torify
-Summary:	The torify wrapper script
-Group:		System Environment/Daemons
-Requires:	tsocks
-# Prevent version mix
-Conflicts:	%name-core < %version-%release
-Conflicts:	%name-core > %version-%release
+Summary:        The torify wrapper script
+Group:          System Environment/Daemons
+Requires:       tsocks
+Requires:       %{name}-core = %{version}-%{release}
 %{?noarch}
 
 
 %package systemd
-Summary:	Systemd initscripts for tor
-Group:		System Environment/Daemons
-Source10:	tor.systemd.service
-Provides:	init(%name) = systemd
-Requires:	%name-core = %version-%release
-%{?systemd_reqs}
+Summary:        Systemd initscripts for tor
+Group:          System Environment/Daemons
+Source10:       tor.systemd.service
+Provides:       init(%{name}) = systemd
+Requires:       %{name}-core = %{version}-%{release}
+Requires(post):    systemd
+Requires(preun):   systemd
+Requires(postun):  systemd
 %{?noarch}
 
 
 %package upstart
-Summary:		upstart initscripts for %name
-Group:			System Environment/Base
-Source20:		%name.upstart
-Provides:		init(%name) = upstart
-Requires:		%name-core = %version-%release
-Requires(pre):		/etc/init
-Requires(post):		/usr/bin/killall
-Requires(postun):	/sbin/initctl
+Summary:        upstart initscripts for %{name}
+Group:          System Environment/Base
+Source20:       %{name}.upstart
+Provides:       init(%{name}) = upstart
+Requires:       %{name}-core = %{version}-%{release}
+Requires(pre):     /etc/init
+Requires(post):    /usr/bin/killall
+Requires(postun):  /sbin/initctl
 %{?noarch}
 
 
@@ -141,105 +122,123 @@ daemon.
 %prep
 %setup -q
 
-sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
-cat <<EOF >>src/config/torrc.sample.in
-Log notice syslog
-User  %username
-EOF
-
 
 %build
 export LDFLAGS='-Wl,--as-needed'
-%configure
+%configure --with-tor-user=%{username} --with-tor-group=%{username}
 make %{?_smp_mflags}
 
 
 %install
-rm -rf $RPM_BUILD_ROOT _doc _doc-torify
-
 make install DESTDIR=$RPM_BUILD_ROOT
-mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 
-mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir,%_var/run/%name}
+mv $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc{.sample,}
+sed -i -e "s|#DataDirectory.*$|DataDirectory %{homedir}/.tor|g" \
+    $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc
+cat << EOF >> $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc
+Log notice syslog
+User %{username}
+EOF
 
-install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
-install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
+mkdir -p $RPM_BUILD_ROOT%{logdir}
+mkdir -p $RPM_BUILD_ROOT%{homedir}
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/run/tor
 
-install -D -p -m 0644 %SOURCE20 $RPM_BUILD_ROOT%_sysconfdir/init/tor.conf
+install -D -p -m 0644 %{SOURCE10} \
+    $RPM_BUILD_ROOT%_unitdir/%{name}.service
+install -D -p -m 0644 %{SOURCE2} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
+install -D -p -m 0644 %{SOURCE20} \
+    $RPM_BUILD_ROOT%{_sysconfdir}/init/tor.conf
 
-mv $RPM_BUILD_ROOT%_datadir/doc/tor _doc
+# Split docs for tor and torify
+mv $RPM_BUILD_ROOT%{_datadir}/doc/tor _doc
 mkdir _doc-torify
 mv _doc/torify.html _doc-torify
 
-%{!?with_upstart:  rm -rf $RPM_BUILD_ROOT%_sysconfdir/init}
+%{!?with_upstart:  rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/init}
 
 
 %pre core
-%__fe_groupadd %uid -r %username &>/dev/null || :
-%__fe_useradd  %uid -r -s /sbin/nologin -d %homedir -M          \
-                    -c 'TOR anonymizing user' -g %username %username &>/dev/null || :
+%__fe_groupadd %uid -r %{username} &>/dev/null || :
+%__fe_useradd  %uid -r -s /sbin/nologin -d %{homedir} -M \
+                    -c 'TOR anonymizing user' \
+                    -g %{username} %{username} &>/dev/null || :
 
 %postun core
-%__fe_userdel  %username &>/dev/null || :
-%__fe_groupdel %username &>/dev/null || :
+%__fe_userdel  %{username} &>/dev/null || :
+%__fe_groupdel %{username} &>/dev/null || :
 
+%post systemd
+%systemd_post tor.service
 
-%systemd_install systemd %name.service
+%preun systemd
+%systemd_preun tor.service
 
+%postun systemd
+%systemd_postun tor.service
 
 %postun upstart
-/usr/bin/killall -u %username -s INT tor 2>/dev/null || :
+/usr/bin/killall -u %{username} -s INT tor 2>/dev/null || :
 
 %preun upstart
 test "$1" != "0" || /sbin/initctl -q stop tor || :
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 
 %files
 
 
 %files core
-%defattr(-,root,root,-)
-%doc LICENSE README ChangeLog
-%doc ReleaseNotes
-%doc _doc/*
-%dir               %_sysconfdir/tor
-%config(noreplace) %_sysconfdir/logrotate.d/tor
-%attr(0700,%username,%username) %dir %homedir
-%attr(0730,root,%username)      %dir %logdir
-%attr(0640,root,%username) %config(noreplace) %_sysconfdir/tor/torrc
-%_bindir/*
-%_mandir/man1/*
-%_datadir/tor
+%doc LICENSE README ChangeLog ReleaseNotes _doc/*
+%{_bindir}/tor
+%{_bindir}/tor-gencert
+%{_bindir}/tor-resolve
+%{_datadir}/tor
+%{_mandir}/man1/tor.1*
+%{_mandir}/man1/tor-gencert.1*
+%{_mandir}/man1/tor-resolve.1*
+%dir %{_sysconfdir}/tor
+%attr(0640,root,%{username}) %config(noreplace) %{_sysconfdir}/tor/torrc
+%config(noreplace) %{_sysconfdir}/logrotate.d/tor
+%attr(0700,%{username},%{username}) %dir %{homedir}
+%attr(0750,%{username},%{username}) %dir %{logdir}
+%attr(0750,%{username},%{username}) %dir %{_localstatedir}/run/tor
 
-%exclude %_mandir/man1/torify*
-%exclude %_bindir/torify
+%exclude %{_mandir}/man1/torify.1*
+%exclude %{_bindir}/torify
 
 
 %files -n torify
-%defattr(-,root,root,-)
 %doc _doc-torify/*
-%_bindir/torify
-%_mandir/man1/torify*
-%dir               %_sysconfdir/tor
-%config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
+%{_bindir}/torify
+%{_mandir}/man1/torify*
+%dir               %{_sysconfdir}/tor
+%config(noreplace) %{_sysconfdir}/tor/tor-tsocks.conf
 
 
 %files systemd
-%defattr(-,root,root,-)
-%_unitdir/%name.service
+%{_unitdir}/tor.service
 
 
 %if 0%{?with_upstart:1}
 %files upstart
-  %defattr(-,root,root,-)
-  %config(noreplace) /etc/init/*
+  %config(noreplace) %{_sysconfdir}/init/*
 %endif
 
+
 %changelog
+* Wed Feb 06 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.3.25-1901
+- add additional %%configure options for user and group
+- add --defaults-torrc to systemd service to make sure sane defaults are set
+  unless explicitly overridden
+- remove unnecessary BuildRoot tag
+- remove unnecessary rm -rf RPM_BUILD_ROOT
+- remove unnecessary %%clean section
+- remove unnecessary defattr's
+- fix Requires for torify subpackage
+- update scriptlets to latest systemd guidelines
+- aesthetic changes to the SPEC for clarity and readability
+
 * Sun Dec  9 2012 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.3.25-1900
 - updated to 0.2.3.25
 
