@@ -12,7 +12,7 @@
 
 Name:           tor
 Version:        0.2.3.25
-Release:        1901
+Release:        1902
 Group:          System Environment/Daemons
 License:        BSD
 Summary:        Anonymizing overlay network for TCP (The onion router)
@@ -44,7 +44,7 @@ Requires(postun):  /etc/logrotate.d
 %package -n torify
 Summary:        The torify wrapper script
 Group:          System Environment/Daemons
-Requires:       tsocks
+Requires:       torsocks
 Requires:       %{name}-core = %{version}-%{release}
 %{?noarch}
 
@@ -227,6 +227,9 @@ test "$1" != "0" || /sbin/initctl -q stop tor || :
 
 
 %changelog
+* Thu Feb 07 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.3.25-1902
+- torify subpackage should depend on torsocks not tsocks (#908569)
+
 * Wed Feb 06 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.3.25-1901
 - add additional %%configure options for user and group
 - add --defaults-torrc to systemd service to make sure sane defaults are set
