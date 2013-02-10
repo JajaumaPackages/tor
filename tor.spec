@@ -1,6 +1,7 @@
 ## This package understands the following switches:
 %bcond_without		fedora
 %bcond_without		noarch
+%bcond_without		systemd
 %bcond_with		upstart
 
 %global _hardened_build	1
@@ -172,6 +173,7 @@ mkdir _doc-torify
 mv _doc/torify.html _doc-torify
 
 %{!?with_upstart:  rm -rf $RPM_BUILD_ROOT%_sysconfdir/init}
+%{!?with_systemd:  rm -rf $RPM_BUILD_ROOT%_unitdir}
 
 
 %pre core
@@ -228,10 +230,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 
 
+%if 0%{?with_systemd:1}
 %files systemd
 %defattr(-,root,root,-)
-%_unitdir/%name.service
-
+  %_unitdir/%name.service
+%endif
 
 %if 0%{?with_upstart:1}
 %files upstart
@@ -240,6 +243,9 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Sun Feb 10 2013 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+- conditionalized systemd builds
+
 * Sun Feb 10 2013 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.3.25-1903
 - reverted "Package cleanup and various fixes"; too invasive and
   non-auditable changes which are breaking things
