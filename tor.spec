@@ -31,7 +31,7 @@ Requires(postun):	 /bin/systemctl\
 
 Name:		tor
 Version:	0.2.3.25
-Release:	%release_func 1903
+Release:	%release_func 1904
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -64,7 +64,7 @@ Requires(postun):	/etc/logrotate.d
 %package -n torify
 Summary:	The torify wrapper script
 Group:		System Environment/Daemons
-Requires:	tsockstorsocks
+Requires:	torsocks
 # Prevent version mix
 Conflicts:	%name-core < %version-%release
 Conflicts:	%name-core > %version-%release
@@ -243,7 +243,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Sun Feb 10 2013 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+* Wed Feb 13 2013 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.3.25-1904
+- fixed torsocks requirement
 - conditionalized systemd builds
 
 * Sun Feb 10 2013 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.3.25-1903
