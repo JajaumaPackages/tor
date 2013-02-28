@@ -11,26 +11,12 @@
 %global homedir			%_var/lib/%name
 %global logdir			%_var/log/%name
 
-%{!?_unitdir:%global _unitdir /lib/systemd/system}
 %{?with_noarch:%global noarch	BuildArch:	noarch}
-%{!?systemd_reqs:%global systemd_reqs \
-Requires(post):		 /bin/systemctl\
-Requires(preun):	 /bin/systemctl\
-Requires(postun):	 /bin/systemctl\
-%nil}
-%{!?systemd_install:%global systemd_install()\
-%post %1\
-%systemd_post %2 \
-%preun %1\
-%systemd_preun %2 \
-%postun %1\
-%systemd_postun_with_restart %2 \
-%nil}
 
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1905%{?dist}
+Release:	1906%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -76,7 +62,9 @@ Group:		System Environment/Daemons
 Source10:	tor.systemd.service
 Provides:	init(%name) = systemd
 Requires:	%name-core = %version-%release
-%{?systemd_reqs}
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
 %{?noarch}
 
 
@@ -185,7 +173,14 @@ mv _doc/torify.html _doc-torify
 %__fe_groupdel %username &>/dev/null || :
 
 
-%systemd_install systemd %name.service
+%post
+%systemd_post %name.service
+
+%preun
+%systemd_preun %name.service
+
+%postun
+%systemd_postun_with_restart %name.service
 
 
 %postun upstart
@@ -242,6 +237,12 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1906
+- remove unnecessary %%_unitdir macro
+- remove %%systemd_reqs and %%systemd_install macros, moving the parts to
+  the appropriate sections to improve readability and consistency with other
+  SPECS
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1905
 - remove %%release_func macro to improve readability and consistency with
   other SPECS
