@@ -16,7 +16,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1908%{?dist}
+Release:	1909%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -197,8 +197,8 @@ test "$1" != "0" || /sbin/initctl -q stop tor || :
 %dir               %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%username,%username) %dir %homedir
-%attr(0730,root,%username)      %dir %logdir
-%attr(0640,root,%username) %config(noreplace) %_sysconfdir/tor/torrc
+%attr(0750,%username,%username)      %dir %logdir
+%attr(0644,root,root) %config(noreplace) %_sysconfdir/tor/torrc
 %_bindir/*
 %_mandir/man1/*
 %_datadir/tor
@@ -226,6 +226,12 @@ test "$1" != "0" || /sbin/initctl -q stop tor || :
 %endif
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1909
+- change permissions of the following files/directories to match upstream:
+  /var/log/tor should be owned by toranon:toranon with 0750 permissions;
+  /var/lib/tor should be owned by toranon:toranon with 0700 permissions;
+  /etc/tor/torrc should be owned by root:root with 0644 permissions;
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1908
 - remove unnecessary Requires on logrotate directory
 
