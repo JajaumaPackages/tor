@@ -7,7 +7,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1919%{?dist}
+Release:	1920%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -15,6 +15,7 @@ URL:		http://www.torproject.org
 Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
 Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
+Source3:	tor.defaults-torrc
 Source10:	tor.systemd.service
 
 # tor-design.pdf is not shipped anymore with tor
@@ -57,12 +58,6 @@ high-stakes anonymity.
 %prep
 %setup -q
 
-sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
-cat <<EOF >>src/config/torrc.sample.in
-Log notice syslog
-User  %toruser
-EOF
-
 
 %build
 export LDFLAGS='-Wl,--as-needed'
@@ -79,6 +74,7 @@ mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir,%_var/run/%name}
 
 install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
 install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
+install -D -p -m 0644 %SOURCE3  $RPM_BUILD_ROOT%_datadir/%name/defaults-torrc
 
 
 %pre
@@ -115,6 +111,15 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1920
+- remove all modifications to the default tor configuration file so that we
+  can stick more closely to upstream defaults
+- add /usr/share/tor/defaults-torrc file, which only contains two options:
+    DataDirectory /var/lib/tor
+    User toranon
+- when starting the tor service, use the following options as recommended by
+  upstream: --defaults-torrc /usr/share/tor/defaults-torrc -f /etc/tor/torrc
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1919
 - split username global variable into separate toruser and torgroup global
   variables to improve spec flexibility and ease of comprehension, as well
