@@ -1,18 +1,12 @@
-## This package understands the following switches:
-%bcond_without		noarch
-
 %global _hardened_build	1
 
 %global username		toranon
 %global homedir			%_var/lib/%name
 %global logdir			%_var/log/%name
 
-%{?with_noarch:%global noarch	BuildArch:	noarch}
-
-
 Name:		tor
 Version:	0.2.3.25
-Release:	1917%{?dist}
+Release:	1918%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -119,6 +113,11 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1918
+- after moving the tor-systemd and torify subpackages back into the main tor
+  package, the %%with_noarch macro and the associated conditionals are no
+  longer used so remove them
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1917
 - add missing Provides for the obsoleted tor-doc subpackage
 
