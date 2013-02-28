@@ -13,7 +13,6 @@
 
 %{!?_unitdir:%global _unitdir /lib/systemd/system}
 %{?with_noarch:%global noarch	BuildArch:	noarch}
-%{!?release_func:%global release_func() %%{?prerelease:0.}%1%%{?prerelease:.%%prerelease}%%{?dist}}
 %{!?systemd_reqs:%global systemd_reqs \
 Requires(post):		 /bin/systemctl\
 Requires(preun):	 /bin/systemctl\
@@ -31,7 +30,7 @@ Requires(postun):	 /bin/systemctl\
 
 Name:		tor
 Version:	0.2.3.25
-Release:	%release_func 1904
+Release:	1905%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -243,6 +242,10 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1905
+- remove %%release_func macro to improve readability and consistency with
+  other SPECS
+
 * Wed Feb 13 2013 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de> - 0.2.3.25-1904
 - fixed torsocks requirement
 - conditionalized systemd builds
