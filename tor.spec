@@ -12,23 +12,28 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1914%{?dist}
+Release:	1915%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
 URL:		http://www.torproject.org
-Requires:	%name-systemd  = %version-%release
 Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
 Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
+Source10:	tor.systemd.service
 
 # tor-design.pdf is not shipped anymore with tor
 Obsoletes:	tor-doc < 0.2.2
 Obsoletes:  tor-core < 0:0.2.3.25-1914
 Provides:   tor-core = 0:%version-%release
+Obsoletes:  tor-systemd < 0:0.2.3.25-1915
+Provides:   tor-systemd = 0:%version-%release
 
 BuildRequires:	libevent-devel openssl-devel asciidoc
 Requires(pre):  shadow-utils
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
 
 
 %package -n torify
@@ -38,17 +43,6 @@ Requires:	torsocks
 # Prevent version mix
 Conflicts:	%name < %version-%release
 Conflicts:	%name > %version-%release
-%{?noarch}
-
-
-%package systemd
-Summary:	Systemd initscripts for tor
-Group:		System Environment/Daemons
-Source10:	tor.systemd.service
-Requires:	%name = %version-%release
-Requires(post): systemd
-Requires(preun): systemd
-Requires(postun): systemd
 %{?noarch}
 
 
@@ -75,13 +69,6 @@ high-stakes anonymity.
 Tor is a connection-based low-latency anonymous communication system.
 
 This package contains the "torify" wrapper script.
-
-
-%description systemd
-Tor is a connection-based low-latency anonymous communication system.
-
-This package contains the systemd initscripts to start the "tor"
-daemon.
 
 
 %prep
@@ -145,6 +132,7 @@ exit 0
 %_bindir/*
 %_mandir/man1/*
 %_datadir/tor
+%_unitdir/%name.service
 
 %exclude %_mandir/man1/torify*
 %exclude %_bindir/torify
@@ -158,11 +146,13 @@ exit 0
 %config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 
 
-%files systemd
-%_unitdir/%name.service
-
-
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1915
+- move the tor-systemd subpackage back into the main tor package:
+  the main tor package has a hard requirement on tor-systemd, so there is no
+  purpose for keeping tor-systemd separate from the main package
+- remove "Requires: tor-systemd"
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1914
 - move the tor-core subpackage back into the main tor package to match upstream
   expectations and user expectations (ie, yum install tor)
