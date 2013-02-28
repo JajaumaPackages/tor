@@ -7,7 +7,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1920%{?dist}
+Release:	1921%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -95,22 +95,32 @@ exit 0
 
 
 %files
-%doc LICENSE README ChangeLog
-%doc ReleaseNotes
-%doc doc/HACKING doc/TODO doc/*.html
+%doc LICENSE README ChangeLog ReleaseNotes doc/HACKING doc/TODO doc/*.html
 %dir               %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%toruser,%torgroup) %dir %homedir
 %attr(0750,%toruser,%torgroup)      %dir %logdir
 %attr(0644,root,root) %config(noreplace) %_sysconfdir/tor/torrc
-%_bindir/*
-%_mandir/man1/*
-%_datadir/tor
+%_bindir/tor
+%_bindir/tor-gencert
+%_bindir/tor-resolve
+%_bindir/torify
+%_mandir/man1/tor.1*
+%_mandir/man1/tor-gencert.1*
+%_mandir/man1/tor-resolve.1*
+%_mandir/man1/torify.1*
+%_datadir/tor/defaults-torrc
+%_datadir/tor/geoip
 %_unitdir/%name.service
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1921
+- take a more cautious approach in the %%files section and specify filenames
+  more explicitly rather than using wildcards, which also makes it easier to
+  see the contents of the package
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1920
 - remove all modifications to the default tor configuration file so that we
   can stick more closely to upstream defaults
