@@ -13,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1911%{?dist}
+Release:	1912%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -182,6 +182,10 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1912
+- amend logrotate file to match closer with upstream defaults, and removing
+  references to several obsolete init systems
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1911
 - remove tor-upstart subpackage as upstart is no longer installable within
   Fedora and renders the the subpackage obsolete
