@@ -1,12 +1,13 @@
 %global _hardened_build	1
 
-%global username		toranon
+%global toruser		toranon
+%global torgroup		toranon
 %global homedir			%_var/lib/%name
 %global logdir			%_var/log/%name
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1918%{?dist}
+Release:	1919%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -59,13 +60,14 @@ high-stakes anonymity.
 sed -i -e 's!^\(\# *\)\?DataDirectory .*!DataDirectory %homedir/.tor!' src/config/torrc.sample.in
 cat <<EOF >>src/config/torrc.sample.in
 Log notice syslog
-User  %username
+User  %toruser
 EOF
 
 
 %build
 export LDFLAGS='-Wl,--as-needed'
-%configure --docdir=%_docdir/%name-%version
+%configure --with-tor-user=%toruser --with-tor-group=%torgroup \
+    --docdir=%_docdir/%name-%version
 make %{?_smp_mflags}
 
 
@@ -80,10 +82,10 @@ install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
 
 %pre
-getent group %username >/dev/null || groupadd -r %username
-getent passwd %username >/dev/null || \
+getent group %torgroup >/dev/null || groupadd -r %torgroup
+getent passwd %toruser >/dev/null || \
     useradd -r -s /sbin/nologin -d %homedir -M \
-    -c 'TOR anonymizing user' -g %username %username
+    -c 'TOR anonymizing user' -g %torgroup %toruser
 exit 0
 
 %post
@@ -103,8 +105,8 @@ exit 0
 %dir               %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 %config(noreplace) %_sysconfdir/logrotate.d/tor
-%attr(0700,%username,%username) %dir %homedir
-%attr(0750,%username,%username)      %dir %logdir
+%attr(0700,%toruser,%torgroup) %dir %homedir
+%attr(0750,%toruser,%torgroup)      %dir %logdir
 %attr(0644,root,root) %config(noreplace) %_sysconfdir/tor/torrc
 %_bindir/*
 %_mandir/man1/*
@@ -113,6 +115,13 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1919
+- split username global variable into separate toruser and torgroup global
+  variables to improve spec flexibility and ease of comprehension, as well
+  as matching how upstream have written their spec
+- use --with-tor-user=%%toruser and --with-tor-group=%%torgroup options when
+  running %%configure, as recommended by upstream
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1918
 - after moving the tor-systemd and torify subpackages back into the main tor
   package, the %%with_noarch macro and the associated conditionals are no
