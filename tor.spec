@@ -2,12 +2,12 @@
 
 %global toruser		toranon
 %global torgroup		toranon
-%global homedir			%_var/lib/%name
-%global logdir			%_var/log/%name
+%global homedir			%_localstatedir/lib/%name
+%global logdir			%_localstatedir/log/%name
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1921%{?dist}
+Release:	1922%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -70,7 +70,7 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 
-mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir,%_var/run/%name}
+mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir}
 
 install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
 install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
@@ -116,6 +116,11 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1922
+- the /var/run/tor directory is not needed so remove it, which also fixes
+  bug #656707
+- use %%_localstatedir instead of %%_var
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1921
 - take a more cautious approach in the %%files section and specify filenames
   more explicitly rather than using wildcards, which also makes it easier to
