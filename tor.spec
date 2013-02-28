@@ -12,7 +12,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1915%{?dist}
+Release:	1916%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -28,22 +28,15 @@ Obsoletes:  tor-core < 0:0.2.3.25-1914
 Provides:   tor-core = 0:%version-%release
 Obsoletes:  tor-systemd < 0:0.2.3.25-1915
 Provides:   tor-systemd = 0:%version-%release
+Obsoletes:  torify < 0:0.2.3.25-1916
+Provides:   torify = 0:%version-%release
 
 BuildRequires:	libevent-devel openssl-devel asciidoc
+Requires:	torsocks
 Requires(pre):  shadow-utils
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
-
-
-%package -n torify
-Summary:	The torify wrapper script
-Group:		System Environment/Daemons
-Requires:	torsocks
-# Prevent version mix
-Conflicts:	%name < %version-%release
-Conflicts:	%name > %version-%release
-%{?noarch}
 
 
 %description
@@ -65,12 +58,6 @@ strength of the anonymity provided. Tor is not presently suitable for
 high-stakes anonymity.
 
 
-%description -n torify
-Tor is a connection-based low-latency anonymous communication system.
-
-This package contains the "torify" wrapper script.
-
-
 %prep
 %setup -q
 
@@ -83,13 +70,11 @@ EOF
 
 %build
 export LDFLAGS='-Wl,--as-needed'
-%configure
+%configure --docdir=%_docdir/%name-%version
 make %{?_smp_mflags}
 
 
 %install
-rm -rf _doc _doc-torify
-
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
 
@@ -97,10 +82,6 @@ mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir,%_var/run/%name}
 
 install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
 install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
-
-mv $RPM_BUILD_ROOT%_datadir/doc/tor _doc
-mkdir _doc-torify
-mv _doc/torify.html _doc-torify
 
 
 %pre
@@ -123,8 +104,9 @@ exit 0
 %files
 %doc LICENSE README ChangeLog
 %doc ReleaseNotes
-%doc _doc/*
+%doc doc/HACKING doc/TODO doc/*.html
 %dir               %_sysconfdir/tor
+%config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%username,%username) %dir %homedir
 %attr(0750,%username,%username)      %dir %logdir
@@ -134,19 +116,15 @@ exit 0
 %_datadir/tor
 %_unitdir/%name.service
 
-%exclude %_mandir/man1/torify*
-%exclude %_bindir/torify
-
-
-%files -n torify
-%doc _doc-torify/*
-%_bindir/torify
-%_mandir/man1/torify*
-%dir               %_sysconfdir/tor
-%config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
-
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1916
+- move the torify subpackage back into the main tor package to match upstream
+  expectations and user expectations (ie, yum install tor)
+- remove the logic separating the documentation files for tor and torify,
+  which is now no longer needed
+- use --docdir option when running %%configure
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1915
 - move the tor-systemd subpackage back into the main tor package:
   the main tor package has a hard requirement on tor-systemd, so there is no
