@@ -16,7 +16,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1907%{?dist}
+Release:	1908%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -40,8 +40,6 @@ BuildRequires:	fedora-usermgmt-devel
 Provides:		user(%username)  = %uid
 Provides:		group(%username) = %uid
 Requires:		init(%name)
-Requires(pre):		/etc/logrotate.d
-Requires(postun):	/etc/logrotate.d
 %{?FE_USERADD_REQ}
 
 
@@ -228,6 +226,9 @@ test "$1" != "0" || /sbin/initctl -q stop tor || :
 %endif
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1908
+- remove unnecessary Requires on logrotate directory
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1907
 - remove unnecessary BuildRoot tag
 - remove unnecessary rm -rf RPM_BUILD_ROOT
