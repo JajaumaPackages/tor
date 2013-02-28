@@ -1,25 +1,25 @@
-%global _hardened_build	1
+%global _hardened_build 1
 
-%global toruser		toranon
-%global torgroup		toranon
-%global homedir			%_localstatedir/lib/%name
-%global logdir			%_localstatedir/log/%name
+%global toruser     toranon
+%global torgroup    toranon
+%global homedir     %_localstatedir/lib/%name
+%global logdir      %_localstatedir/log/%name
 
-Name:		tor
-Version:	0.2.3.25
-Release:	1922%{?dist}
-Group:		System Environment/Daemons
-License:	BSD
-Summary:	Anonymizing overlay network for TCP (The onion router)
-URL:		http://www.torproject.org
-Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
-Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
-Source2:	tor.logrotate
-Source3:	tor.defaults-torrc
-Source10:	tor.systemd.service
+Name:       tor
+Version:    0.2.3.25
+Release:    1923%{?dist}
+Group:      System Environment/Daemons
+License:    BSD
+Summary:    Anonymizing overlay network for TCP (The onion router)
+URL:        http://www.torproject.org
+Source0:    https://www.torproject.org/dist/%name-%version.tar.gz
+Source1:    https://www.torproject.org/dist/%name-%version.tar.gz.asc
+Source2:    tor.logrotate
+Source3:    tor.defaults-torrc
+Source10:   tor.systemd.service
 
 # tor-design.pdf is not shipped anymore with tor
-Obsoletes:	tor-doc < 0.2.2
+Obsoletes:  tor-doc < 0.2.2
 Provides:   tor-doc = 0:%version-%release
 Obsoletes:  tor-core < 0:0.2.3.25-1914
 Provides:   tor-core = 0:%version-%release
@@ -28,11 +28,11 @@ Provides:   tor-systemd = 0:%version-%release
 Obsoletes:  torify < 0:0.2.3.25-1916
 Provides:   torify = 0:%version-%release
 
-BuildRequires:	libevent-devel openssl-devel asciidoc
-Requires:	torsocks
-Requires(pre):  shadow-utils
-Requires(post): systemd
-Requires(preun): systemd
+BuildRequires:    libevent-devel openssl-devel asciidoc
+Requires:         torsocks
+Requires(pre):    shadow-utils
+Requires(post):   systemd
+Requires(preun):  systemd
 Requires(postun): systemd
 
 
@@ -96,11 +96,11 @@ exit 0
 
 %files
 %doc LICENSE README ChangeLog ReleaseNotes doc/HACKING doc/TODO doc/*.html
-%dir               %_sysconfdir/tor
+%dir %_sysconfdir/tor
 %config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 %config(noreplace) %_sysconfdir/logrotate.d/tor
 %attr(0700,%toruser,%torgroup) %dir %homedir
-%attr(0750,%toruser,%torgroup)      %dir %logdir
+%attr(0750,%toruser,%torgroup) %dir %logdir
 %attr(0644,root,root) %config(noreplace) %_sysconfdir/tor/torrc
 %_bindir/tor
 %_bindir/tor-gencert
@@ -116,6 +116,9 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1923
+- mix of tabs and spaces, so remove all tabs
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1922
 - the /var/run/tor directory is not needed so remove it, which also fixes
   bug #656707
