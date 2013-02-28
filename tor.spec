@@ -1,5 +1,4 @@
 ## This package understands the following switches:
-%bcond_without		fedora
 %bcond_without		noarch
 %bcond_without		systemd
 %bcond_with		upstart
@@ -7,7 +6,6 @@
 %global _hardened_build	1
 
 %global username		toranon
-%global uid			19
 %global homedir			%_var/lib/%name
 %global logdir			%_var/log/%name
 
@@ -16,7 +14,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1909%{?dist}
+Release:	1910%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -36,11 +34,8 @@ Source2:	tor.logrotate
 Obsoletes:	tor-doc < 0.2.2
 
 BuildRequires:	libevent-devel openssl-devel asciidoc
-BuildRequires:	fedora-usermgmt-devel
-Provides:		user(%username)  = %uid
-Provides:		group(%username) = %uid
 Requires:		init(%name)
-%{?FE_USERADD_REQ}
+Requires(pre):  shadow-utils
 
 
 %package -n torify
@@ -161,14 +156,11 @@ mv _doc/torify.html _doc-torify
 
 
 %pre core
-%__fe_groupadd %uid -r %username &>/dev/null || :
-%__fe_useradd  %uid -r -s /sbin/nologin -d %homedir -M          \
-                    -c 'TOR anonymizing user' -g %username %username &>/dev/null || :
-
-%postun core
-%__fe_userdel  %username &>/dev/null || :
-%__fe_groupdel %username &>/dev/null || :
-
+getent group %username >/dev/null || groupadd -r %username
+getent passwd %username >/dev/null || \
+    useradd -r -s /sbin/nologin -d %homedir -M \
+    -c 'TOR anonymizing user' -g %username %username
+exit 0
 
 %post
 %systemd_post %name.service
@@ -226,6 +218,14 @@ test "$1" != "0" || /sbin/initctl -q stop tor || :
 %endif
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1910
+- remove dependency on fedora-usermgmt as it has been queued for obsoletion
+  from Fedora
+- add users and groups without forcing use of uid=19 as it is not necessarily
+  available, nor is it required or expected by upstream
+- do not remove users/groups in %%postun as the guidelines state:
+  https://fedoraproject.org/wiki/Packaging:UsersAndGroups
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1909
 - change permissions of the following files/directories to match upstream:
   /var/log/tor should be owned by toranon:toranon with 0750 permissions;
