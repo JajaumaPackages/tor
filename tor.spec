@@ -16,7 +16,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1906%{?dist}
+Release:	1907%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -31,7 +31,6 @@ Group:		System Environment/Daemons
 Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
 Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
-BuildRoot:	%_tmppath/%name-%version-%release-root
 
 # tor-design.pdf is not shipped anymore with tor
 Obsoletes:	tor-doc < 0.2.2
@@ -143,7 +142,7 @@ make %{?_smp_mflags}
 
 
 %install
-rm -rf $RPM_BUILD_ROOT _doc _doc-torify
+rm -rf _doc _doc-torify
 
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
@@ -190,15 +189,10 @@ mv _doc/torify.html _doc-torify
 test "$1" != "0" || /sbin/initctl -q stop tor || :
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
 
 
 %files core
-%defattr(-,root,root,-)
 %doc LICENSE README ChangeLog
 %doc ReleaseNotes
 %doc _doc/*
@@ -216,7 +210,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %files -n torify
-%defattr(-,root,root,-)
 %doc _doc-torify/*
 %_bindir/torify
 %_mandir/man1/torify*
@@ -226,17 +219,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %if 0%{?with_systemd:1}
 %files systemd
-%defattr(-,root,root,-)
   %_unitdir/%name.service
 %endif
 
 %if 0%{?with_upstart:1}
 %files upstart
-  %defattr(-,root,root,-)
   %config(noreplace) /etc/init/*
 %endif
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1907
+- remove unnecessary BuildRoot tag
+- remove unnecessary rm -rf RPM_BUILD_ROOT
+- remove unnecessary %%clean
+- remove unnecessary defattr's
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1906
 - remove unnecessary %%_unitdir macro
 - remove %%systemd_reqs and %%systemd_install macros, moving the parts to
