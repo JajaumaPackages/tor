@@ -1,6 +1,5 @@
 ## This package understands the following switches:
 %bcond_without		noarch
-%bcond_without		systemd
 
 %global _hardened_build	1
 
@@ -13,7 +12,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1912%{?dist}
+Release:	1913%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -127,8 +126,6 @@ mv $RPM_BUILD_ROOT%_datadir/doc/tor _doc
 mkdir _doc-torify
 mv _doc/torify.html _doc-torify
 
-%{!?with_systemd:  rm -rf $RPM_BUILD_ROOT%_unitdir}
-
 
 %pre core
 getent group %username >/dev/null || groupadd -r %username
@@ -175,13 +172,15 @@ exit 0
 %config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
 
 
-%if 0%{?with_systemd:1}
 %files systemd
-  %_unitdir/%name.service
-%endif
+%_unitdir/%name.service
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1913
+- the tor-systemd subpackage is a hard requirement, so remove the conditional
+  that decides whether it is built
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1912
 - amend logrotate file to match closer with upstream defaults, and removing
   references to several obsolete init systems
