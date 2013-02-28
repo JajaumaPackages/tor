@@ -12,7 +12,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1916%{?dist}
+Release:	1917%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -24,6 +24,7 @@ Source10:	tor.systemd.service
 
 # tor-design.pdf is not shipped anymore with tor
 Obsoletes:	tor-doc < 0.2.2
+Provides:   tor-doc = 0:%version-%release
 Obsoletes:  tor-core < 0:0.2.3.25-1914
 Provides:   tor-core = 0:%version-%release
 Obsoletes:  tor-systemd < 0:0.2.3.25-1915
@@ -118,6 +119,9 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1917
+- add missing Provides for the obsoleted tor-doc subpackage
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1916
 - move the torify subpackage back into the main tor package to match upstream
   expectations and user expectations (ie, yum install tor)
