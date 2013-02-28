@@ -12,24 +12,20 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1913%{?dist}
+Release:	1914%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
 URL:		http://www.torproject.org
-Requires:	%name-core = %version-%release
 Requires:	%name-systemd  = %version-%release
-
-
-%package core
-Summary:	Core programs for tor
-Group:		System Environment/Daemons
 Source0:	https://www.torproject.org/dist/%name-%version.tar.gz
 Source1:	https://www.torproject.org/dist/%name-%version.tar.gz.asc
 Source2:	tor.logrotate
 
 # tor-design.pdf is not shipped anymore with tor
 Obsoletes:	tor-doc < 0.2.2
+Obsoletes:  tor-core < 0:0.2.3.25-1914
+Provides:   tor-core = 0:%version-%release
 
 BuildRequires:	libevent-devel openssl-devel asciidoc
 Requires(pre):  shadow-utils
@@ -40,8 +36,8 @@ Summary:	The torify wrapper script
 Group:		System Environment/Daemons
 Requires:	torsocks
 # Prevent version mix
-Conflicts:	%name-core < %version-%release
-Conflicts:	%name-core > %version-%release
+Conflicts:	%name < %version-%release
+Conflicts:	%name > %version-%release
 %{?noarch}
 
 
@@ -49,7 +45,7 @@ Conflicts:	%name-core > %version-%release
 Summary:	Systemd initscripts for tor
 Group:		System Environment/Daemons
 Source10:	tor.systemd.service
-Requires:	%name-core = %version-%release
+Requires:	%name = %version-%release
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -73,13 +69,6 @@ and is even more likely than released code to have anonymity-spoiling
 bugs. The present network is very small -- this further reduces the
 strength of the anonymity provided. Tor is not presently suitable for
 high-stakes anonymity.
-
-
-%description core
-Tor is a connection-based low-latency anonymous communication system.
-
-This package provides the "tor" program, which serves as both a client
-and a relay node.
 
 
 %description -n torify
@@ -127,7 +116,7 @@ mkdir _doc-torify
 mv _doc/torify.html _doc-torify
 
 
-%pre core
+%pre
 getent group %username >/dev/null || groupadd -r %username
 getent passwd %username >/dev/null || \
     useradd -r -s /sbin/nologin -d %homedir -M \
@@ -145,9 +134,6 @@ exit 0
 
 
 %files
-
-
-%files core
 %doc LICENSE README ChangeLog
 %doc ReleaseNotes
 %doc _doc/*
@@ -177,6 +163,10 @@ exit 0
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1914
+- move the tor-core subpackage back into the main tor package to match upstream
+  expectations and user expectations (ie, yum install tor)
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1913
 - the tor-systemd subpackage is a hard requirement, so remove the conditional
   that decides whether it is built
