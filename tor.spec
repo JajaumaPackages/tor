@@ -2,33 +2,36 @@
 
 %global toruser     toranon
 %global torgroup    toranon
-%global homedir     %_localstatedir/lib/%name
-%global logdir      %_localstatedir/log/%name
+%global homedir     %{_localstatedir}/lib/%{name}
+%global logdir      %{_localstatedir}/log/%{name}
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1923%{?dist}
+Release:    1924%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
 URL:        http://www.torproject.org
-Source0:    https://www.torproject.org/dist/%name-%version.tar.gz
-Source1:    https://www.torproject.org/dist/%name-%version.tar.gz.asc
+
+Source0:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz
+Source1:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
 Source2:    tor.logrotate
 Source3:    tor.defaults-torrc
 Source10:   tor.systemd.service
 
-# tor-design.pdf is not shipped anymore with tor
-Obsoletes:  tor-doc < 0.2.2
-Provides:   tor-doc = 0:%version-%release
-Obsoletes:  tor-core < 0:0.2.3.25-1914
-Provides:   tor-core = 0:%version-%release
+Obsoletes:  tor-doc     < 0.2.2
+Provides:   tor-doc     = 0:%{version}-%{release}
+Obsoletes:  tor-core    < 0:0.2.3.25-1914
+Provides:   tor-core    = 0:%{version}-%{release}
 Obsoletes:  tor-systemd < 0:0.2.3.25-1915
-Provides:   tor-systemd = 0:%version-%release
-Obsoletes:  torify < 0:0.2.3.25-1916
-Provides:   torify = 0:%version-%release
+Provides:   tor-systemd = 0:%{version}-%{release}
+Obsoletes:  torify      < 0:0.2.3.25-1916
+Provides:   torify      = 0:%{version}-%{release}
 
-BuildRequires:    libevent-devel openssl-devel asciidoc
+BuildRequires:    asciidoc
+BuildRequires:    libevent-devel
+BuildRequires:    openssl-devel
+
 Requires:         torsocks
 Requires(pre):    shadow-utils
 Requires(post):   systemd
@@ -61,61 +64,69 @@ high-stakes anonymity.
 
 %build
 export LDFLAGS='-Wl,--as-needed'
-%configure --with-tor-user=%toruser --with-tor-group=%torgroup \
-    --docdir=%_docdir/%name-%version
+%configure --with-tor-user=%{toruser} --with-tor-group=%{torgroup} \
+    --docdir=%{_docdir}/%{name}-%{version}
 make %{?_smp_mflags}
 
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
-mv $RPM_BUILD_ROOT%_sysconfdir/tor/torrc{.sample,}
+mv $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc.sample \
+    $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc
 
-mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir}
+mkdir -p $RPM_BUILD_ROOT%{logdir}
+mkdir -p $RPM_BUILD_ROOT%{homedir}
 
-install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
-install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
-install -D -p -m 0644 %SOURCE3  $RPM_BUILD_ROOT%_datadir/%name/defaults-torrc
+install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%{name}.service
+install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
+install -D -p -m 0644 %SOURCE3  $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults-torrc
 
 
 %pre
-getent group %torgroup >/dev/null || groupadd -r %torgroup
-getent passwd %toruser >/dev/null || \
-    useradd -r -s /sbin/nologin -d %homedir -M \
-    -c 'TOR anonymizing user' -g %torgroup %toruser
+getent group %{torgroup} >/dev/null || groupadd -r %{torgroup}
+getent passwd %{toruser} >/dev/null || \
+    useradd -r -s /sbin/nologin -d %{homedir} -M \
+    -c 'TOR anonymizing user' -g %{torgroup} %{toruser}
 exit 0
 
 %post
-%systemd_post %name.service
+%systemd_post %{name}.service
 
 %preun
-%systemd_preun %name.service
+%systemd_preun %{name}.service
 
 %postun
-%systemd_postun_with_restart %name.service
+%systemd_postun_with_restart %{name}.service
 
 
 %files
 %doc LICENSE README ChangeLog ReleaseNotes doc/HACKING doc/TODO doc/*.html
-%dir %_sysconfdir/tor
-%config(noreplace) %_sysconfdir/tor/tor-tsocks.conf
-%config(noreplace) %_sysconfdir/logrotate.d/tor
-%attr(0700,%toruser,%torgroup) %dir %homedir
-%attr(0750,%toruser,%torgroup) %dir %logdir
-%attr(0644,root,root) %config(noreplace) %_sysconfdir/tor/torrc
-%_bindir/tor
-%_bindir/tor-gencert
-%_bindir/tor-resolve
-%_bindir/torify
-%_mandir/man1/tor.1*
-%_mandir/man1/tor-gencert.1*
-%_mandir/man1/tor-resolve.1*
-%_mandir/man1/torify.1*
-%_datadir/tor/defaults-torrc
-%_datadir/tor/geoip
-%_unitdir/%name.service
+%{_bindir}/tor
+%{_bindir}/tor-gencert
+%{_bindir}/tor-resolve
+%{_bindir}/torify
+%{_mandir}/man1/tor.1*
+%{_mandir}/man1/tor-gencert.1*
+%{_mandir}/man1/tor-resolve.1*
+%{_mandir}/man1/torify.1*
+%{_datadir}/tor/defaults-torrc
+%{_datadir}/tor/geoip
+%_unitdir/%{name}.service
+
+%dir %{_sysconfdir}/tor
+%config(noreplace) %{_sysconfdir}/tor/tor-tsocks.conf
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/tor/torrc
+%config(noreplace) %{_sysconfdir}/logrotate.d/tor
+
+%attr(0700,%{toruser},%{torgroup}) %dir %{homedir}
+%attr(0750,%{toruser},%{torgroup}) %dir %{logdir}
 
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1924
+- whitespace changes and reorganization in the interests of readability
+  and clarity
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1923
 - mix of tabs and spaces, so remove all tabs
 
