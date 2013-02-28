@@ -1,7 +1,6 @@
 ## This package understands the following switches:
 %bcond_without		noarch
 %bcond_without		systemd
-%bcond_with		upstart
 
 %global _hardened_build	1
 
@@ -14,7 +13,7 @@
 
 Name:		tor
 Version:	0.2.3.25
-Release:	1910%{?dist}
+Release:	1911%{?dist}
 Group:		System Environment/Daemons
 License:	BSD
 Summary:	Anonymizing overlay network for TCP (The onion router)
@@ -34,7 +33,6 @@ Source2:	tor.logrotate
 Obsoletes:	tor-doc < 0.2.2
 
 BuildRequires:	libevent-devel openssl-devel asciidoc
-Requires:		init(%name)
 Requires(pre):  shadow-utils
 
 
@@ -52,23 +50,10 @@ Conflicts:	%name-core > %version-%release
 Summary:	Systemd initscripts for tor
 Group:		System Environment/Daemons
 Source10:	tor.systemd.service
-Provides:	init(%name) = systemd
 Requires:	%name-core = %version-%release
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
-%{?noarch}
-
-
-%package upstart
-Summary:		upstart initscripts for %name
-Group:			System Environment/Base
-Source20:		%name.upstart
-Provides:		init(%name) = upstart
-Requires:		%name-core = %version-%release
-Requires(pre):		/etc/init
-Requires(post):		/usr/bin/killall
-Requires(postun):	/sbin/initctl
 %{?noarch}
 
 
@@ -111,13 +96,6 @@ This package contains the systemd initscripts to start the "tor"
 daemon.
 
 
-%description upstart
-Tor is a connection-based low-latency anonymous communication system.
-
-This package contains the upstart compliant initscripts to start the "tor"
-daemon.
-
-
 %prep
 %setup -q
 
@@ -145,13 +123,10 @@ mkdir -p $RPM_BUILD_ROOT{%logdir,%homedir,%_var/run/%name}
 install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%name.service
 install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%_sysconfdir/logrotate.d/tor
 
-install -D -p -m 0644 %SOURCE20 $RPM_BUILD_ROOT%_sysconfdir/init/tor.conf
-
 mv $RPM_BUILD_ROOT%_datadir/doc/tor _doc
 mkdir _doc-torify
 mv _doc/torify.html _doc-torify
 
-%{!?with_upstart:  rm -rf $RPM_BUILD_ROOT%_sysconfdir/init}
 %{!?with_systemd:  rm -rf $RPM_BUILD_ROOT%_unitdir}
 
 
@@ -170,13 +145,6 @@ exit 0
 
 %postun
 %systemd_postun_with_restart %name.service
-
-
-%postun upstart
-/usr/bin/killall -u %username -s INT tor 2>/dev/null || :
-
-%preun upstart
-test "$1" != "0" || /sbin/initctl -q stop tor || :
 
 
 %files
@@ -212,12 +180,12 @@ test "$1" != "0" || /sbin/initctl -q stop tor || :
   %_unitdir/%name.service
 %endif
 
-%if 0%{?with_upstart:1}
-%files upstart
-  %config(noreplace) /etc/init/*
-%endif
 
 %changelog
+* Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1911
+- remove tor-upstart subpackage as upstart is no longer installable within
+  Fedora and renders the the subpackage obsolete
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1910
 - remove dependency on fedora-usermgmt as it has been queued for obsoletion
   from Fedora
