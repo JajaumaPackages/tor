@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1927%{?dist}
+Release:    1928%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -130,6 +130,10 @@ exit 0
 
 
 %changelog
+* Fri Mar 01 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1928
+- increase LimitNOFILE in tor.service from 4096 to 32768, as advised by
+  upstream: https://trac.torproject.org/projects/tor/ticket/8368#comment:4
+
 * Thu Feb 28 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1927
 - package should own the %%{_datadir}/tor directory
 
