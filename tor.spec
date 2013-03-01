@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1926%{?dist}
+Release:    1927%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -115,9 +115,10 @@ exit 0
 %{_mandir}/man1/tor-gencert.1*
 %{_mandir}/man1/tor-resolve.1*
 %{_mandir}/man1/torify.1*
+%dir %{_datadir}/tor
 %{_datadir}/tor/defaults-torrc
 %{_datadir}/tor/geoip
-%_unitdir/%{name}.service
+%{_unitdir}/%{name}.service
 
 %dir %{_sysconfdir}/tor
 %config(noreplace) %{_sysconfdir}/tor/tor-tsocks.conf
@@ -129,6 +130,9 @@ exit 0
 
 
 %changelog
+* Thu Feb 28 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1927
+- package should own the %%{_datadir}/tor directory
+
 * Thu Feb 28 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1926
 - remove unnecessary custom LDFLAGS
 
