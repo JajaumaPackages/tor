@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1925%{?dist}
+Release:    1926%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -70,7 +70,6 @@ high-stakes anonymity.
 
 
 %build
-export LDFLAGS='-Wl,--as-needed'
 %configure --with-tor-user=%{toruser} --with-tor-group=%{torgroup} \
     --docdir=%{_docdir}/%{name}-%{version}
 make %{?_smp_mflags}
@@ -130,6 +129,9 @@ exit 0
 
 
 %changelog
+* Thu Feb 28 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1926
+- remove unnecessary custom LDFLAGS
+
 * Thu Feb 28 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1925
 - remove Obsoletes/Provides for tor-doc, which was introduced in Fedora 16
 - add some useful comments about the Obsoletes/Provides/Requires
