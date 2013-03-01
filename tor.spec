@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1924%{?dist}
+Release:    1925%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -15,12 +15,18 @@ URL:        http://www.torproject.org
 
 Source0:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz
 Source1:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
+# Upstream ship their own logrotate file. Ours only has 2 modifications:
+# use 'toranon' user, and use systemctl to reload.
 Source2:    tor.logrotate
+# This makes sure tor runs as 'toranon' and writes to /var/lib/tor instead
+# of /root/.tor directory.
 Source3:    tor.defaults-torrc
+# A ticket has been opened to have the systemd service included upstream:
+# https://trac.torproject.org/projects/tor/ticket/8368
 Source10:   tor.systemd.service
 
-Obsoletes:  tor-doc     < 0.2.2
-Provides:   tor-doc     = 0:%{version}-%{release}
+# Obsoletes/Provides for tor-core, tor-systemd and torify were introduced
+# in Fedora 19 (rawhide).
 Obsoletes:  tor-core    < 0:0.2.3.25-1914
 Provides:   tor-core    = 0:%{version}-%{release}
 Obsoletes:  tor-systemd < 0:0.2.3.25-1915
@@ -32,6 +38,7 @@ BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
 BuildRequires:    openssl-devel
 
+# /usr/bin/torify depends on torsocks, as tsocks has been deprecated.
 Requires:         torsocks
 Requires(pre):    shadow-utils
 Requires(post):   systemd
@@ -123,6 +130,11 @@ exit 0
 
 
 %changelog
+* Thu Feb 28 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1925
+- remove Obsoletes/Provides for tor-doc, which was introduced in Fedora 16
+- add some useful comments about the Obsoletes/Provides/Requires
+- add comments about tor.logrotate, tor.defaults-torrc and tor.systemd.service
+
 * Wed Feb 27 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1924
 - whitespace changes and reorganization in the interests of readability
   and clarity
