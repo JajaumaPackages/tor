@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1928%{?dist}
+Release:    1929%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -18,8 +18,8 @@ Source1:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
 # Upstream ship their own logrotate file. Ours only has 2 modifications:
 # use 'toranon' user, and use systemctl to reload.
 Source2:    tor.logrotate
-# This makes sure tor runs as 'toranon' and writes to /var/lib/tor instead
-# of /root/.tor directory.
+# This makes sure tor runs as 'toranon', logs to syslog at 'notice' level,
+# and writes to /var/lib/tor instead of /root/.tor directory.
 Source3:    tor.defaults-torrc
 # A ticket has been opened to have the systemd service included upstream:
 # https://trac.torproject.org/projects/tor/ticket/8368
@@ -130,6 +130,10 @@ exit 0
 
 
 %changelog
+* Sat Mar 02 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1929
+- add "Log notice syslog" back to tor.defaults-torrc as recommended by
+  upstream: https://bugzilla.redhat.com/show_bug.cgi?id=532373#c19
+
 * Fri Mar 01 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1928
 - increase LimitNOFILE in tor.service from 4096 to 32768, as advised by
   upstream: https://trac.torproject.org/projects/tor/ticket/8368#comment:4
