@@ -11,7 +11,7 @@ Release:    1929%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
-URL:        http://www.torproject.org
+URL:        https://www.torproject.org
 
 Source0:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz
 Source1:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
