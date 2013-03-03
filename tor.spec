@@ -126,8 +126,8 @@ exit 0
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/tor/torrc
 %config(noreplace) %{_sysconfdir}/logrotate.d/tor
 
-%attr(0750,%{toruser},%{torgroup}) %dir %{homedir}
-%attr(0750,%{toruser},%{torgroup}) %dir %{logdir}
+%attr(0700,%{toruser},%{torgroup}) %dir %{homedir}
+%attr(0700,%{toruser},%{torgroup}) %dir %{logdir}
 
 
 %changelog
@@ -136,8 +136,7 @@ exit 0
   upstream: https://bugzilla.redhat.com/show_bug.cgi?id=532373#c19
 - remove unused files in git (verinfo and lastver)
 - change URL to HTTPS
-- allow group read for %%{homedir}, which makes more sense as %%{logdir}
-  also has group read
+- disallow group read for /var/log/tor
 - remove TODO as it doesn't contain any useful information
 
 * Fri Mar 01 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1928
