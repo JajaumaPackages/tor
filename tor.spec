@@ -38,7 +38,8 @@ BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
 BuildRequires:    openssl-devel
 
-# /usr/bin/torify depends on torsocks, as tsocks has been deprecated.
+# /usr/bin/torify is now just a wrapper for torsocks and is only there for
+# backwards compatibility.
 Requires:         torsocks
 Requires(pre):    shadow-utils
 Requires(post):   systemd
@@ -106,7 +107,7 @@ exit 0
 
 
 %files
-%doc LICENSE README ChangeLog ReleaseNotes doc/HACKING doc/TODO doc/*.html
+%doc LICENSE README ChangeLog ReleaseNotes doc/HACKING doc/*.html
 %{_bindir}/tor
 %{_bindir}/tor-gencert
 %{_bindir}/tor-resolve
@@ -125,7 +126,7 @@ exit 0
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/tor/torrc
 %config(noreplace) %{_sysconfdir}/logrotate.d/tor
 
-%attr(0700,%{toruser},%{torgroup}) %dir %{homedir}
+%attr(0750,%{toruser},%{torgroup}) %dir %{homedir}
 %attr(0750,%{toruser},%{torgroup}) %dir %{logdir}
 
 
@@ -133,6 +134,11 @@ exit 0
 * Sat Mar 02 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1929
 - add "Log notice syslog" back to tor.defaults-torrc as recommended by
   upstream: https://bugzilla.redhat.com/show_bug.cgi?id=532373#c19
+- remove unused files in git (verinfo and lastver)
+- change URL to HTTPS
+- allow group read for %%{homedir}, which makes more sense as %%{logdir}
+  also has group read
+- remove TODO as it doesn't contain any useful information
 
 * Fri Mar 01 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1928
 - increase LimitNOFILE in tor.service from 4096 to 32768, as advised by
