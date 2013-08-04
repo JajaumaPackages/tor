@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1929%{?dist}
+Release:    1930%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -131,6 +131,9 @@ exit 0
 
 
 %changelog
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.3.25-1930
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Sat Mar 02 2013 Jamie Nguyen <jamielinux@fedoraproject.org> 0.2.3.25-1929
 - add "Log notice syslog" back to tor.defaults-torrc as recommended by
   upstream: https://bugzilla.redhat.com/show_bug.cgi?id=532373#c19
