@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.3.25
-Release:    1930%{?dist}
+Release:    1931%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -71,8 +71,7 @@ high-stakes anonymity.
 
 
 %build
-%configure --with-tor-user=%{toruser} --with-tor-group=%{torgroup} \
-    --docdir=%{_docdir}/%{name}-%{version}
+%configure --with-tor-user=%{toruser} --with-tor-group=%{torgroup}
 make %{?_smp_mflags}
 
 
@@ -84,16 +83,19 @@ mv $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc.sample \
 mkdir -p $RPM_BUILD_ROOT%{logdir}
 mkdir -p $RPM_BUILD_ROOT%{homedir}
 
-install -D -p -m 0644 %SOURCE10 $RPM_BUILD_ROOT%_unitdir/%{name}.service
-install -D -p -m 0644 %SOURCE2  $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
-install -D -p -m 0644 %SOURCE3  $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults-torrc
+install -D -p -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%_unitdir/%{name}.service
+install -D -p -m 0644 %{SOURCE2}  $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
+install -D -p -m 0644 %{SOURCE3}  $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults-torrc
+
+# Install docs manually.
+rm -rf %{buildroot}%{_datadir}/doc
 
 
 %pre
 getent group %{torgroup} >/dev/null || groupadd -r %{torgroup}
 getent passwd %{toruser} >/dev/null || \
     useradd -r -s /sbin/nologin -d %{homedir} -M \
-    -c 'TOR anonymizing user' -g %{torgroup} %{toruser}
+    -c 'Tor anonymizing user' -g %{torgroup} %{toruser}
 exit 0
 
 %post
@@ -131,6 +133,9 @@ exit 0
 
 
 %changelog
+* Sun Aug 04 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.3.25-1931
+- add fix for new unversioned docdir
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.3.25-1930
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
