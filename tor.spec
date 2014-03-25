@@ -6,8 +6,8 @@
 %global logdir      %{_localstatedir}/log/%{name}
 
 Name:       tor
-Version:    0.2.3.25
-Release:    1931%{?dist}
+Version:    0.2.4.21
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -24,15 +24,6 @@ Source3:    tor.defaults-torrc
 # A ticket has been opened to have the systemd service included upstream:
 # https://trac.torproject.org/projects/tor/ticket/8368
 Source10:   tor.systemd.service
-
-# Obsoletes/Provides for tor-core, tor-systemd and torify were introduced
-# in Fedora 19 (rawhide).
-Obsoletes:  tor-core    < 0:0.2.3.25-1914
-Provides:   tor-core    = 0:%{version}-%{release}
-Obsoletes:  tor-systemd < 0:0.2.3.25-1915
-Provides:   tor-systemd = 0:%{version}-%{release}
-Obsoletes:  torify      < 0:0.2.3.25-1916
-Provides:   torify      = 0:%{version}-%{release}
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -121,10 +112,10 @@ exit 0
 %dir %{_datadir}/tor
 %{_datadir}/tor/defaults-torrc
 %{_datadir}/tor/geoip
+%{_datadir}/tor/geoip6
 %{_unitdir}/%{name}.service
 
 %dir %{_sysconfdir}/tor
-%config(noreplace) %{_sysconfdir}/tor/tor-tsocks.conf
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/tor/torrc
 %config(noreplace) %{_sysconfdir}/logrotate.d/tor
 
@@ -133,6 +124,13 @@ exit 0
 
 
 %changelog
+* Tue Mar 25 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.4.21-1
+- update to upstream release 0.2.4.21
+- remove crazy Release numbering
+- remove Obsoletes/Provides that were introduced in F19
+- remove tor-tsocks.conf which has been removed completely upstream
+- include new file: _datadir/tor/geoip6
+
 * Sun Aug 04 2013 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.3.25-1931
 - add fix for new unversioned docdir
 
