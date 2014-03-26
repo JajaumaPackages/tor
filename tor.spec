@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.4.21
-Release:    1%{?dist}
+Release:    2%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -124,6 +124,9 @@ exit 0
 
 
 %changelog
+* Wed Mar 26 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.4.21-2
+- remove `--quiet` from default systemd service file
+
 * Tue Mar 25 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.4.21-1
 - update to upstream release 0.2.4.21
 - remove crazy Release numbering
