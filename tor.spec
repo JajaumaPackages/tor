@@ -6,8 +6,8 @@
 %global logdir      %{_localstatedir}/log/%{name}
 
 Name:       tor
-Version:    0.2.4.21
-Release:    2%{?dist}
+Version:    0.2.4.22
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -124,6 +124,9 @@ exit 0
 
 
 %changelog
+* Mon May 19 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.4.22-1
+- update to upstream release 0.2.4.22
+
 * Wed Mar 26 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.4.21-2
 - remove `--quiet` from default systemd service file
 
