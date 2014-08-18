@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.4.23
-Release:    1%{?dist}
+Release:    2%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -124,6 +124,9 @@ exit 0
 
 
 %changelog
+* Mon Aug 18 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.4.23-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Thu Jul 31 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.4.23-1
 - update to upstream release 0.2.4.23
 - CVE-2014-5117: potential for traffic-confirmation attacks
