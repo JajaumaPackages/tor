@@ -6,7 +6,7 @@
 %global logdir      %{_localstatedir}/log/%{name}
 
 Name:       tor
-Version:    0.2.4.25
+Version:    0.2.5.10
 Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
@@ -124,6 +124,9 @@ exit 0
 
 
 %changelog
+* Mon Oct 27 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.5.10-1
+- update to upstream release 0.2.5.10
+
 * Wed Oct 22 2014 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.4.25-1
 - update to upstream release 0.2.4.25
 
