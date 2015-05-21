@@ -6,7 +6,7 @@
 %global logdir      %{_localstatedir}/log/%{name}
 
 Name:       tor
-Version:    0.2.5.12
+Version:    0.2.6.8
 Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
@@ -21,9 +21,8 @@ Source2:    tor.logrotate
 # This makes sure tor runs as 'toranon', logs to syslog at 'notice' level,
 # and writes to /var/lib/tor instead of /root/.tor directory.
 Source3:    tor.defaults-torrc
-# A ticket has been opened to have the systemd service included upstream:
-# https://trac.torproject.org/projects/tor/ticket/8368
-Source10:   tor.systemd.service
+Source10:   tor.service
+Source11:   tor@.service
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -75,6 +74,7 @@ mkdir -p $RPM_BUILD_ROOT%{logdir}
 mkdir -p $RPM_BUILD_ROOT%{homedir}
 
 install -D -p -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%_unitdir/%{name}.service
+install -D -p -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%_unitdir/%{name}@.service
 install -D -p -m 0644 %{SOURCE2}  $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
 install -D -p -m 0644 %{SOURCE3}  $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults-torrc
 
@@ -114,6 +114,7 @@ exit 0
 %{_datadir}/tor/geoip
 %{_datadir}/tor/geoip6
 %{_unitdir}/%{name}.service
+%{_unitdir}/%{name}@.service
 
 %dir %{_sysconfdir}/tor
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/tor/torrc
@@ -124,6 +125,11 @@ exit 0
 
 
 %changelog
+* Thu May 21 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.8-1
+- update to upstream release 0.2.6.8
+- improve/harden systemd service file
+- add multi-instance systemd service file (#1210837)
+
 * Tue Apr 07 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.5.12-1
 - update to upstream release 0.2.5.12
 
