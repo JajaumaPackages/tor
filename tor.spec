@@ -6,7 +6,7 @@
 %global logdir      %{_localstatedir}/log/%{name}
 
 Name:       tor
-Version:    0.2.6.8
+Version:    0.2.6.9
 Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
@@ -125,6 +125,9 @@ exit 0
 
 
 %changelog
+* Fri Jun 12 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.9-1
+- update to upstream release 0.2.6.9
+
 * Thu May 21 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.8-1
 - update to upstream release 0.2.6.8
 - improve/harden systemd service file
