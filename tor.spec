@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.6.9
-Release:    2%{?dist}
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -125,9 +125,6 @@ exit 0
 
 
 %changelog
-* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.6.9-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
-
 * Fri Jun 12 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.9-1
 - update to upstream release 0.2.6.9
 
