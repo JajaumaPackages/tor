@@ -17,8 +17,8 @@ DeviceAllow = /dev/null rw
 DeviceAllow = /dev/urandom r
 InaccessibleDirectories = /home
 ReadOnlyDirectories = /
-ReadWriteDirectories = -/var/lib/tor
-ReadWriteDirectories = -/var/log/tor
+ReadWriteDirectories = /var/lib/tor
+ReadWriteDirectories = /var/log/tor
 
 [Install]
 WantedBy = multi-user.target
