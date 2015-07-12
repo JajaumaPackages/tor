@@ -7,7 +7,7 @@
 
 Name:       tor
 Version:    0.2.6.9
-Release:    3%{?dist}
+Release:    4%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -125,6 +125,9 @@ exit 0
 
 
 %changelog
+* Sun Jul 12 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.9-4
+- rebuild
+
 * Sun Jul 12 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.9-3
 - add missing arguments to config checks executed in ExecStartPre
 
