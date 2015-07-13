@@ -6,8 +6,8 @@
 %global logdir      %{_localstatedir}/log/%{name}
 
 Name:       tor
-Version:    0.2.6.9
-Release:    5%{?dist}
+Version:    0.2.6.10
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -125,6 +125,9 @@ exit 0
 
 
 %changelog
+* Mon Jul 13 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-1
+- update to upstream release 0.2.6.10
+
 * Sun Jul 12 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.9-5
 - also fix ExecStartPre in tor@.service
 
