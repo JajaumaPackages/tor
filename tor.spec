@@ -11,6 +11,12 @@
 %bcond_with libsystemd
 %endif
 
+%ifarch %{ix86} x86_64
+%bcond_without libseccomp
+%else
+%bcond_with libseccomp
+%endif
+
 Name:       tor
 Version:    0.2.6.10
 Release:    2%{?dist}
@@ -31,8 +37,12 @@ Source10:   tor.service
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
-BuildRequires:    libseccomp-devel
 BuildRequires:    openssl-devel
+
+%if 0%{with libseccomp}
+# Only available on certain architectures.
+BuildRequires:    libseccomp-devel
+%endif
 
 %if 0%{with libsystemd}
 # Requires systemd >= 209. RHEL 7 has systemd 208.
