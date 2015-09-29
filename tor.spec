@@ -5,6 +5,12 @@
 %global homedir     %{_localstatedir}/lib/%{name}
 %global logdir      %{_localstatedir}/log/%{name}
 
+%if 0%{?fedora} || 0%{?rhel} >= 8
+%bcond_without libsystemd
+%else
+%bcond_with libsystemd
+%endif
+
 Name:       tor
 Version:    0.2.6.10
 Release:    1%{?dist}
@@ -22,11 +28,15 @@ Source2:    tor.logrotate
 # and writes to /var/lib/tor instead of /root/.tor directory.
 Source3:    tor.defaults-torrc
 Source10:   tor.service
-Source11:   tor@.service
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
 BuildRequires:    openssl-devel
+
+%if 0%{with libsystemd}
+# Requires systemd >= 209. RHEL 7 has systemd 208.
+BuildRequires:    systemd-devel
+%endif
 
 # /usr/bin/torify is now just a wrapper for torsocks and is only there for
 # backwards compatibility.
@@ -74,9 +84,23 @@ mkdir -p $RPM_BUILD_ROOT%{logdir}
 mkdir -p $RPM_BUILD_ROOT%{homedir}
 
 install -D -p -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%_unitdir/%{name}.service
-install -D -p -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%_unitdir/%{name}@.service
 install -D -p -m 0644 %{SOURCE2}  $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
 install -D -p -m 0644 %{SOURCE3}  $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults-torrc
+
+%if 0%{without libsystemd}
+# Some features are not available for systemd 208 on RHEL 7.
+sed -i $RPM_BUILD_ROOT%_unitdir/%{name}.service \
+    -e 's/^Type=.*/Type=simple/g' \
+    -e '/^NotifyAccess=.*/d' \
+    -e '/^WatchdogSec=.*/d' \
+    -e 's#^PrivateDevices=.*#DeviceAllow=/dev/null rw\nDeviceAllow=/dev/urandom r#g' \
+    -e 's#^ProtectHome=.*#InaccessibleDirectories=/home#g' \
+    -e '/^ProtectSystem=.*/d'
+%endif
+
+sed -e 's#/etc/tor/torrc#/etc/tor/%%i.torrc#g' \
+    $RPM_BUILD_ROOT%_unitdir/%{name}.service \
+    > $RPM_BUILD_ROOT%_unitdir/%{name}@.service
 
 # Install docs manually.
 rm -rf %{buildroot}%{_datadir}/doc
