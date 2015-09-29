@@ -19,7 +19,7 @@
 
 Name:       tor
 Version:    0.2.6.10
-Release:    2%{?dist}
+Release:    3%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -160,6 +160,9 @@ exit 0
 
 
 %changelog
+* Tue Sep 29 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-3
+- only build with libseccomp support on ix86, x86_64
+
 * Tue Sep 29 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-2
 - improve systemd integration
 - add BR: libseccomp-devel
