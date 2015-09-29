@@ -31,6 +31,7 @@ Source10:   tor.service
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
+BuildRequires:    libseccomp-devel
 BuildRequires:    openssl-devel
 
 %if 0%{with libsystemd}
