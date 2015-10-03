@@ -19,7 +19,7 @@
 
 Name:       tor
 Version:    0.2.6.10
-Release:    3%{?dist}
+Release:    4%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -159,6 +159,10 @@ exit 0
 
 
 %changelog
+* Sat Oct 03 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-4
+- remove NoNewPrivileges as it prevents SELinux transition
+- revert to DeviceAllow instead of PrivateDevices due to SELinux denials
+
 * Tue Sep 29 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-3
 - only build with libseccomp support on ix86, x86_64
 
