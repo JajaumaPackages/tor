@@ -1,0 +1,61 @@
+From ec35ad51e585023b718c2b257721bdf2d2f25f3e Mon Sep 17 00:00:00 2001
+From: Jamie Nguyen <j@jamielinux.com>
+Date: Mon, 9 Nov 2015 07:38:19 +0000
+Subject: [PATCH] Create DataDirectory with group read permissions
+
+Directories created by Tor have 0700 and toranon:toranon permissions. Tor also
+checks the permissions again at runtime, reducing the permissions if they
+aren't 0700 and refusing to run if the owner or group aren't both toranon.
+
+These precautions protect the security of the Tor files. However, these
+permissions make the Tor DataDirectory (ie, /var/lib/tor) unreadable by the
+root user. When Tor is started as root, it accesses the DataDirectory before
+dropping root permissions. Normally this wouldn't cause any problems, but there
+are two situations in which Tor is prevented from running:
+
+(1) If the systemd CapabilityBoundingSet option is set but CAP_READ_SEARCH isn't
+    listed, root is denied access to the Tor DataDirectory.
+
+(2) If SELinux is enabled but tor_t domain isn't allowed dac_read_search
+    permissions, root is denied access to the Tor DataDirectory.
+
+CAP_READ_SEARCH and dac_read_search should be avoided; a process with these
+permissions can read arbitrary files regardless of DAC permissions. The
+solution proposed in this patch is to default to creating the DataDirectory
+with 0750 permissions, while also allowing the group to be either toranon or
+root.
+---
+ src/common/util.c | 2 +-
+ src/or/config.c   | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/common/util.c b/src/common/util.c
+index 442d57a..793fbb4 100644
+--- a/src/common/util.c
++++ b/src/common/util.c
+@@ -2196,7 +2196,7 @@ check_private_dir(const char *dirname, cpd_check_t check,
+     return -1;
+   }
+   if ( (check & (CPD_GROUP_OK|CPD_GROUP_READ))
+-       && (st.st_gid != running_gid) ) {
++       && (st.st_gid != running_gid) && (st.st_gid != 0)) {
+     struct group *gr;
+     char *process_groupname = NULL;
+     gr = getgrgid(running_gid);
+diff --git a/src/or/config.c b/src/or/config.c
+index fca350c..5cefc7c 100644
+--- a/src/or/config.c
++++ b/src/or/config.c
+@@ -1152,7 +1152,8 @@ options_act_reversible(const or_options_t *old_options, char **msg)
+ 
+   /* Ensure data directory is private; create if possible. */
+   if (check_private_dir(options->DataDirectory,
+-                        running_tor ? CPD_CREATE : CPD_CHECK,
++                        running_tor ?
++                        CPD_CREATE|CPD_GROUP_READ : CPD_CHECK|CPD_GROUP_READ,
+                         options->User)<0) {
+     tor_asprintf(msg,
+               "Couldn't access/create private data directory \"%s\"",
+-- 
+2.5.0
+

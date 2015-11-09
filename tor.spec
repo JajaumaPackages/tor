@@ -19,7 +19,7 @@
 
 Name:       tor
 Version:    0.2.6.10
-Release:    4%{?dist}
+Release:    5%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -34,6 +34,9 @@ Source2:    tor.logrotate
 # and writes to /var/lib/tor instead of /root/.tor directory.
 Source3:    tor.defaults-torrc
 Source10:   tor.service
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=1279222
+Patch0:     tor-0.2.6.10-Create-DataDirectory-with-group-read.patch
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -79,6 +82,7 @@ high-stakes anonymity.
 
 %prep
 %setup -q
+%patch0 -p1
 
 
 %build
@@ -154,11 +158,16 @@ exit 0
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/tor/torrc
 %config(noreplace) %{_sysconfdir}/logrotate.d/tor
 
-%attr(0700,%{toruser},%{torgroup}) %dir %{homedir}
-%attr(0700,%{toruser},%{torgroup}) %dir %{logdir}
+%attr(0750,%{toruser},root) %dir %{homedir}
+%attr(0750,%{toruser},%{torgroup}) %dir %{logdir}
 
 
 %changelog
+* Sun Nov 08 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-5
+- allow group read of DataDirectory and change owner to root (#1279222),
+  as otherwise CapabilityBoundingSet requires CAP_READ_SEARCH and SELinux
+  tor_t requires dac_read_search
+
 * Sat Oct 03 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-4
 - remove NoNewPrivileges as it prevents SELinux transition
 - revert to DeviceAllow instead of PrivateDevices due to SELinux denials
