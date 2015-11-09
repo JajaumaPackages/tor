@@ -1,0 +1,81 @@
+From bc29ca103c07d542a65980be97d8f565dcb5aaa0 Mon Sep 17 00:00:00 2001
+From: Jamie Nguyen <j@jamielinux.com>
+Date: Mon, 9 Nov 2015 09:27:48 +0000
+Subject: [PATCH] Optionally allow root group access to DataDirectory
+
+Directories created by Tor have 0700 and TorUser:TorUser permissions.
+Tor also checks the permissions again at runtime, reducing the
+permissions if they aren't 0700 and refusing to run if the directory
+UID and GID aren't both TorUser.
+
+These precautions protect the security of the Tor files. However, the
+DataDirectory (ie, /var/lib/tor) is unreadable by the root user. When
+Tor is started as root, it accesses the DataDirectory before dropping
+root permissions. Normally this wouldn't cause any problems, but there
+are two situations in which Tor is prevented from running:
+
+(1) If the systemd CapabilityBoundingSet option is set but CAP_READ_SEARCH
+    isn't listed, root is denied access to the DataDirectory.
+
+(2) If SELinux is enabled but tor_t domain isn't allowed dac_read_search
+    permissions, root is denied access to the DataDirectory.
+
+CAP_READ_SEARCH and dac_read_search should be avoided; a process with
+these permissions can read arbitrary files regardless of DAC
+permissions.
+
+The solution proposed in this patch is to allow DataDirectory to have
+either 0700 or 0750 permissions, and allow the group to be either
+TorUser or root (but nobody else). The default will remain 0700
+TorUser:TorUser, but an administrator has the option of using 0750
+TorUser:root permissions when using either CapabilityBoundingSet or
+SELinux (or both).
+---
+ changes/bug17562  | 6 ++++++
+ src/common/util.c | 2 +-
+ src/or/config.c   | 3 ++-
+ 3 files changed, 9 insertions(+), 2 deletions(-)
+ create mode 100644 changes/bug17562
+
+diff --git a/changes/bug17562 b/changes/bug17562
+new file mode 100644
+index 0000000..ed241cf
+--- /dev/null
++++ b/changes/bug17562
+@@ -0,0 +1,6 @@
++  o Minor bug fixes:
++    - Allow DataDirectory to have either 0700 or 0750 permissions, and allow
++      directory GID to be Tor User or root (but nobody else). An administrator
++      therefore has the option of 0750 TorUser:root permissions. This prevents
++      needing CAP_READ_SEARCH when using systemd' CapabilityBoundingSet, or
++      dac_read_search when using SELinux. (The default of 0700 is unchanged.)
+diff --git a/src/common/util.c b/src/common/util.c
+index b33c80f..c0178a3 100644
+--- a/src/common/util.c
++++ b/src/common/util.c
+@@ -2116,7 +2116,7 @@ check_private_dir(const char *dirname, cpd_check_t check,
+     return -1;
+   }
+   if ( (check & (CPD_GROUP_OK|CPD_GROUP_READ))
+-       && (st.st_gid != running_gid) ) {
++       && (st.st_gid != running_gid) && (st.st_gid != 0)) {
+     struct group *gr;
+     char *process_groupname = NULL;
+     gr = getgrgid(running_gid);
+diff --git a/src/or/config.c b/src/or/config.c
+index 22039b4..894d0ff 100644
+--- a/src/or/config.c
++++ b/src/or/config.c
+@@ -1188,7 +1188,8 @@ options_act_reversible(const or_options_t *old_options, char **msg)
+ 
+   /* Ensure data directory is private; create if possible. */
+   if (check_private_dir(options->DataDirectory,
+-                        running_tor ? CPD_CREATE : CPD_CHECK,
++                        running_tor ?
++                        CPD_CREATE|CPD_GROUP_OK : CPD_CHECK|CPD_GROUP_OK,
+                         options->User)<0) {
+     tor_asprintf(msg,
+               "Couldn't access/create private data directory \"%s\"",
+-- 
+2.5.0
+

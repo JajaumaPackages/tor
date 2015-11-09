@@ -19,7 +19,7 @@
 
 Name:       tor
 Version:    0.2.6.10
-Release:    5%{?dist}
+Release:    6%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -36,7 +36,8 @@ Source3:    tor.defaults-torrc
 Source10:   tor.service
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1279222
-Patch0:     tor-0.2.6.10-Create-DataDirectory-with-group-read.patch
+# https://trac.torproject.org/projects/tor/ticket/17562
+Patch0:     tor-0.2.6.10-Optionally-allow-root-group-access-to-DataDirectory.patch
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -163,6 +164,10 @@ exit 0
 
 
 %changelog
+* Mon Nov 09 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-6
+- amend patch so that the default of 0700 doesn't change (but instead allow
+  either 0700 or 0750)
+
 * Sun Nov 08 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-5
 - allow group read of DataDirectory and change owner to root (#1279222),
   as otherwise CapabilityBoundingSet requires CAP_READ_SEARCH and SELinux
