@@ -18,8 +18,8 @@
 %endif
 
 Name:       tor
-Version:    0.2.6.10
-Release:    6%{?dist}
+Version:    0.2.7.5
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP (The onion router)
@@ -164,6 +164,9 @@ exit 0
 
 
 %changelog
+* Sun Nov 29 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-1
+- update to upstream release 0.2.7.5
+
 * Mon Nov 09 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.6.10-6
 - amend patch so that the default of 0700 doesn't change (but instead allow
   either 0700 or 0750)
