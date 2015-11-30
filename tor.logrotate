@@ -8,6 +8,6 @@
     create 0640 toranon toranon
     sharedscripts
     postrotate
-        /bin/systemctl reload tor.service >/dev/null 2>/dev/null || :
+        /bin/systemctl reload tor-master.service >/dev/null 2>/dev/null || :
     endscript
 }

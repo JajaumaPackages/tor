@@ -30,6 +30,9 @@ Source1:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
 Source2:    tor.logrotate
 Source3:    tor.defaults-torrc
 Source10:   tor.service
+Source11:   tor@.service
+Source12:   tor-master.service
+Source20:   README
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1279222
 # https://trac.torproject.org/projects/tor/ticket/17562
@@ -87,27 +90,27 @@ make %{?_smp_mflags}
 make install DESTDIR=$RPM_BUILD_ROOT
 mv $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc.sample \
     $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc
+install -D -p -m 0644 %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/tor/README
 
 mkdir -p $RPM_BUILD_ROOT%{logdir}
 mkdir -p $RPM_BUILD_ROOT%{homedir}
 
 install -D -p -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%_unitdir/%{name}.service
+install -D -p -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%_unitdir/%{name}@.service
+install -D -p -m 0644 %{SOURCE12} $RPM_BUILD_ROOT%_unitdir/%{name}-master.service
 install -D -p -m 0644 %{SOURCE2}  $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
 install -D -p -m 0644 %{SOURCE3}  $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults-torrc
 
 %if 0%{without libsystemd}
 # Some features are not available for systemd 208 on RHEL 7.
 sed -i $RPM_BUILD_ROOT%_unitdir/%{name}.service \
+    -i $RPM_BUILD_ROOT%_unitdir/%{name}@.service \
     -e 's/^Type=.*/Type=simple/g' \
     -e '/^NotifyAccess=.*/d' \
     -e '/^WatchdogSec=.*/d' \
     -e 's#^ProtectHome=.*#InaccessibleDirectories=/home#g' \
     -e '/^ProtectSystem=.*/d'
 %endif
-
-sed -e 's#/etc/tor/torrc#/etc/tor/%%i.torrc#g' \
-    $RPM_BUILD_ROOT%_unitdir/%{name}.service \
-    > $RPM_BUILD_ROOT%_unitdir/%{name}@.service
 
 # Install docs manually.
 rm -rf %{buildroot}%{_datadir}/doc
@@ -121,13 +124,13 @@ getent passwd %{toruser} >/dev/null || \
 exit 0
 
 %post
-%systemd_post %{name}.service
+%systemd_post %{name}-master.service
 
 %preun
-%systemd_preun %{name}.service
+%systemd_preun %{name}-master.service
 
 %postun
-%systemd_postun_with_restart %{name}.service
+%systemd_postun_with_restart %{name}-master.service
 
 
 %files
@@ -146,8 +149,10 @@ exit 0
 %{_datadir}/tor/geoip6
 %{_unitdir}/%{name}.service
 %{_unitdir}/%{name}@.service
+%{_unitdir}/%{name}-master.service
 
 %dir %{_sysconfdir}/tor
+%{_sysconfdir}/tor/README
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/tor/torrc
 %config(noreplace) %{_sysconfdir}/logrotate.d/tor
 
@@ -158,6 +163,8 @@ exit 0
 %changelog
 * Mon Nov 30 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-2
 - improve summary and description
+- use tor-master.service to restart/reload all instances (#1286359)
+- add /etc/tor/README
 
 * Sun Nov 29 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-1
 - update to upstream release 0.2.7.5

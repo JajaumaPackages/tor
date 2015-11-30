@@ -1,5 +1,5 @@
 [Unit]
-Description=Anonymizing overlay network for TCP
+Description=Anonymizing overlay network for TCP (instance: %i)
 After=syslog.target network.target nss-lookup.target
 PartOf=tor-master.service
 ReloadPropagatedFrom=tor-master.service
@@ -7,8 +7,8 @@ ReloadPropagatedFrom=tor-master.service
 [Service]
 Type=notify
 NotifyAccess=all
-ExecStartPre=/usr/bin/tor --runasdaemon 0 --defaults-torrc /usr/share/tor/defaults-torrc -f /etc/tor/torrc --verify-config
-ExecStart=/usr/bin/tor --runasdaemon 0 --defaults-torrc /usr/share/tor/defaults-torrc -f /etc/tor/torrc
+ExecStartPre=/usr/bin/tor --runasdaemon 0 --defaults-torrc /usr/share/tor/defaults-torrc -f /etc/tor/%i.torrc --verify-config
+ExecStart=/usr/bin/tor --runasdaemon 0 --defaults-torrc /usr/share/tor/defaults-torrc -f /etc/tor/%i.torrc
 ExecReload=/bin/kill -HUP ${MAINPID}
 KillSignal=SIGINT
 TimeoutSec=30
