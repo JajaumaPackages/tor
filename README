@@ -7,11 +7,11 @@ Multiple instances of Tor can be run simultaneously using different
 configuration files. For example, tor@custom.service will use the configuration
 file "/etc/tor/custom.torrc".
 
-    # cp /etc/tor/torrc /etc/tor/custom.torrc
-    # mkdir /var/lib/tor/custom
-    # chown toranon:toranon /var/lib/tor/custom
+    # touch /etc/tor/custom.torrc
     # echo "SOCKSPort 9051" >> /etc/tor/custom.torrc
-    # echo "DataDirectory /var/lib/tor/custom" > /etc/tor/custom.torrc
+    # echo "DataDirectory /var/lib/tor/custom" >> /etc/tor/custom.torrc
+    # mkdir /var/lib/tor/custom
+    # chown toranon:root /var/lib/tor/custom
     # systemctl start tor@custom.service
 
 To restart, reload, or stop all running instances of Tor (including tor.service

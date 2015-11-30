@@ -19,7 +19,7 @@
 
 Name:       tor
 Version:    0.2.7.5
-Release:    2%{?dist}
+Release:    3%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -161,6 +161,9 @@ exit 0
 
 
 %changelog
+* Mon Nov 30 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-3
+- amend README
+
 * Mon Nov 30 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-2
 - improve summary and description
 - use tor-master.service to restart/reload all instances (#1286359)
