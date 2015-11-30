@@ -19,19 +19,15 @@
 
 Name:       tor
 Version:    0.2.7.5
-Release:    1%{?dist}
+Release:    2%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
-Summary:    Anonymizing overlay network for TCP (The onion router)
+Summary:    Anonymizing overlay network for TCP
 URL:        https://www.torproject.org
 
 Source0:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz
 Source1:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
-# Upstream ship their own logrotate file. Ours only has 2 modifications:
-# use 'toranon' user, and use systemctl to reload.
 Source2:    tor.logrotate
-# This makes sure tor runs as 'toranon', logs to syslog at 'notice' level,
-# and writes to /var/lib/tor instead of /root/.tor directory.
 Source3:    tor.defaults-torrc
 Source10:   tor.service
 
@@ -63,22 +59,18 @@ Requires(postun): systemd
 
 
 %description
-Tor is a connection-based low-latency anonymous communication system.
+The Tor network is a group of volunteer-operated servers that allows people to
+improve their privacy and security on the Internet. Tor's users employ this
+network by connecting through a series of virtual tunnels rather than making a
+direct connection, thus allowing both organizations and individuals to share
+information over public networks without compromising their privacy. Along the
+same line, Tor is an effective censorship circumvention tool, allowing its
+users to reach otherwise blocked destinations or content. Tor can also be used
+as a building block for software developers to create new communication tools
+with built-in privacy features.
 
-Applications connect to the local Tor proxy using the SOCKS protocol. The
-local proxy chooses a path through a set of relays, in which each relay
-knows its predecessor and successor, but no others. Traffic flowing down
-the circuit is unwrapped by a symmetric key at each relay, which reveals
-the downstream relay.
-
-Warnings: Tor does no protocol cleaning.  That means there is a danger
-that application protocols and associated programs can be induced to
-reveal information about the initiator. Tor depends on Privoxy and
-similar protocol cleaners to solve this problem. This is alpha code,
-and is even more likely than released code to have anonymity-spoiling
-bugs. The present network is very small -- this further reduces the
-strength of the anonymity provided. Tor is not presently suitable for
-high-stakes anonymity.
+This package contains the Tor software that can act as either a server on the
+Tor network, or as a client to connect to the Tor network.
 
 
 %prep
@@ -164,6 +156,9 @@ exit 0
 
 
 %changelog
+* Mon Nov 30 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-2
+- improve summary and description
+
 * Sun Nov 29 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-1
 - update to upstream release 0.2.7.5
 
