@@ -134,7 +134,7 @@ exit 0
 systemctl daemon-reload >/dev/null 2>&1 || :
 if [ $1 -ge 1 ]; then
     # Use restart instead of try-restart, as tor-master may be "inactive" even
-    # when there are tor@.service instances running.
+    # when there are tor.service and tor@.service instances running.
     systemctl restart %{name}-master.service >/dev/null 2>&1 || :
 fi
 
