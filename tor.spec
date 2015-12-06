@@ -124,13 +124,19 @@ getent passwd %{toruser} >/dev/null || \
 exit 0
 
 %post
-%systemd_post %{name}-master.service
+%systemd_post %{name}.service
 
 %preun
+%systemd_preun %{name}.service
 %systemd_preun %{name}-master.service
 
 %postun
-%systemd_postun_with_restart %{name}-master.service
+systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ]; then
+    # Use restart instead of try-restart, as tor-master may be "inactive" even
+    # when there are tor@.service instances running.
+    systemctl restart %{name}-master.service >/dev/null 2>&1 || :
+fi
 
 
 %files
