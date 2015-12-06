@@ -19,7 +19,7 @@
 
 Name:       tor
 Version:    0.2.7.5
-Release:    3%{?dist}
+Release:    4%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -161,6 +161,9 @@ exit 0
 
 
 %changelog
+* Sun Dec 06 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-4
+- add PermissionsStartOnly=yes and RestartSec=1 to service file
+
 * Mon Nov 30 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-3
 - amend README
 
