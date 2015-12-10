@@ -108,8 +108,8 @@ sed -i $RPM_BUILD_ROOT%_unitdir/%{name}.service \
     -e 's/^Type=.*/Type=simple/g' \
     -e '/^NotifyAccess=.*/d' \
     -e '/^WatchdogSec=.*/d' \
-    -e 's#^ProtectHome=.*#InaccessibleDirectories=/home#g' \
-    -e '/^ProtectSystem=.*/d'
+    -e 's#^ProtectHome=.*#InaccessibleDirectories=/home\nInaccessibleDirectories=/root\nInaccessibleDirectories=/run/user#g' \
+    -e 's#^ProtectSystem=.*#ReadOnlyDirectories=/boot\nReadOnlyDirectories=/etc\nReadOnlyDirectories=/usr#g'
 %endif
 
 # Install docs manually.
