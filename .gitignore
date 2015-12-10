@@ -1,2 +1,3 @@
 /tor-*.tar.gz
 /tor-*.tar.gz.asc
+/*.rpm
