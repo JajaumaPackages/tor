@@ -18,8 +18,8 @@
 %endif
 
 Name:       tor
-Version:    0.2.7.5
-Release:    6%{?dist}
+Version:    0.2.7.6
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -171,6 +171,10 @@ fi
 
 
 %changelog
+* Fri Dec 11 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-1
+- update to upstream release 0.2.7.6
+- use version of patches that have been accepted upstream
+
 * Thu Dec 10 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-6
 - use ReadOnlyDirectories=/var instead of ReadOnlyDirectories=/ (#1290444)
   and other service file improvements
