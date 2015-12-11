@@ -20,7 +20,7 @@
 
 Name:       tor
 Version:    0.2.7.6
-Release:    1%{?dist}
+Release:    2%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -36,11 +36,13 @@ Source11:   tor@.service
 Source12:   tor-master.service
 Source20:   README
 
-# https://bugzilla.redhat.com/show_bug.cgi?id=1279222
+# These patches have been sent upstream and accepted:
 # https://trac.torproject.org/projects/tor/ticket/17562
 Patch0:     0001-Permit-filesystem-group-to-be-root.patch
 Patch1:     0002-Introduce-DataDirectoryGroupReadable-boolean.patch
 Patch2:     0003-Defer-creation-of-Unix-socket-until-after-setuid.patch
+Patch3:     0004-Simplify-cpd_opts-usage.patch
+Patch4:     0005-Fix-wide-line-log-why-chmod-failed.patch
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -184,6 +186,9 @@ fi
 
 
 %changelog
+* Fri Dec 11 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-2
+- some minor patch fixes
+
 * Fri Dec 11 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-1
 - update to upstream release 0.2.7.6
 - use version of patches that have been accepted upstream
