@@ -96,6 +96,12 @@ make %{?_smp_mflags}
 make install DESTDIR=%{buildroot}
 mv %{buildroot}%{_sysconfdir}/tor/torrc.sample \
     %{buildroot}%{_sysconfdir}/tor/torrc
+cat << EOF >> %{buildroot}%{_sysconfdir}/tor/torrc
+ControlSocket /run/tor/control
+CookieAuthentication 1
+CookieAuthFile /run/tor/control.authcookie
+EOF
+
 install -D -p -m 0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/tor/README
 
 mkdir -p %{buildroot}%{logdir}
@@ -181,6 +187,7 @@ fi
 * Fri Dec 11 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-1
 - update to upstream release 0.2.7.6
 - use version of patches that have been accepted upstream
+- add ControlSocket and CookieAuthFile to /etc/tor/torrc
 
 * Thu Dec 10 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.5-6
 - use ReadOnlyDirectories=/var instead of ReadOnlyDirectories=/ (#1290444)
