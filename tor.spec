@@ -108,6 +108,7 @@ install -D -p -m 0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/tor/README
 
 mkdir -p %{buildroot}%{logdir}
 mkdir -p %{buildroot}%{homedir}
+mkdir -p %{buildroot}%{rundir}
 
 install -D -p -m 0644 %{SOURCE10} %{buildroot}%_unitdir/tor.service
 install -D -p -m 0644 %{SOURCE11} %{buildroot}%_unitdir/tor@.service
@@ -115,8 +116,6 @@ install -D -p -m 0644 %{SOURCE12} %{buildroot}%_unitdir/tor-master.service
 install -D -p -m 0644 %{SOURCE2}  %{buildroot}%{_sysconfdir}/logrotate.d/tor
 install -D -p -m 0644 %{SOURCE3}  %{buildroot}%{_datadir}/tor/defaults-torrc
 install -D -p -m 0644 %{SOURCE4}  %{buildroot}%{_tmpfilesdir}/tor.conf
-
-install -d -m 0750 %{buildroot}/run/tor
 
 %if 0%{without libsystemd}
 # Some features are not available for systemd 208 on RHEL 7.
