@@ -20,7 +20,7 @@
 
 Name:       tor
 Version:    0.2.7.6
-Release:    2%{?dist}
+Release:    3%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -36,13 +36,15 @@ Source11:   tor@.service
 Source12:   tor-master.service
 Source20:   README
 
+Patch0:     tor-0.2.7.6-torrc-ControlSocket-and-CookieAuthFile.patch
+
 # These patches have been sent upstream and accepted:
 # https://trac.torproject.org/projects/tor/ticket/17562
-Patch0:     0001-Permit-filesystem-group-to-be-root.patch
-Patch1:     0002-Introduce-DataDirectoryGroupReadable-boolean.patch
-Patch2:     0003-Defer-creation-of-Unix-socket-until-after-setuid.patch
-Patch3:     0004-Simplify-cpd_opts-usage.patch
-Patch4:     0005-Fix-wide-line-log-why-chmod-failed.patch
+Patch1:     0001-Permit-filesystem-group-to-be-root.patch
+Patch2:     0002-Introduce-DataDirectoryGroupReadable-boolean.patch
+Patch3:     0003-Defer-creation-of-Unix-socket-until-after-setuid.patch
+Patch4:     0004-Simplify-cpd_opts-usage.patch
+Patch5:     0005-Fix-wide-line-log-why-chmod-failed.patch
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -87,6 +89,9 @@ Tor network, or as a client to connect to the Tor network.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
 
 %build
@@ -98,11 +103,6 @@ make %{?_smp_mflags}
 make install DESTDIR=%{buildroot}
 mv %{buildroot}%{_sysconfdir}/tor/torrc.sample \
     %{buildroot}%{_sysconfdir}/tor/torrc
-cat << EOF >> %{buildroot}%{_sysconfdir}/tor/torrc
-ControlSocket /run/tor/control
-CookieAuthentication 1
-CookieAuthFile /run/tor/control.authcookie
-EOF
 
 install -D -p -m 0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/tor/README
 
@@ -186,6 +186,9 @@ fi
 
 
 %changelog
+* Fri Dec 11 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-3
+- place ControlSocket and CookieAuthFile at top of torrc for visibility
+
 * Fri Dec 11 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-2
 - some minor patch fixes
 
