@@ -2,8 +2,9 @@
 
 %global toruser     toranon
 %global torgroup    toranon
-%global homedir     %{_localstatedir}/lib/%{name}
-%global logdir      %{_localstatedir}/log/%{name}
+%global homedir     %{_localstatedir}/lib/tor
+%global logdir      %{_localstatedir}/log/tor
+%global rundir      /run/tor
 
 %if 0%{?fedora} || 0%{?rhel} >= 8
 %bcond_without libsystemd
@@ -25,10 +26,11 @@ License:    BSD
 Summary:    Anonymizing overlay network for TCP
 URL:        https://www.torproject.org
 
-Source0:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz
-Source1:    https://www.torproject.org/dist/%{name}-%{version}.tar.gz.asc
+Source0:    https://www.torproject.org/dist/tor-%{version}.tar.gz
+Source1:    https://www.torproject.org/dist/tor-%{version}.tar.gz.asc
 Source2:    tor.logrotate
 Source3:    tor.defaults-torrc
+Source4:    tor.tmpfiles.d
 Source10:   tor.service
 Source11:   tor@.service
 Source12:   tor-master.service
@@ -91,24 +93,27 @@ make %{?_smp_mflags}
 
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
-mv $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc.sample \
-    $RPM_BUILD_ROOT%{_sysconfdir}/tor/torrc
-install -D -p -m 0644 %{SOURCE20} $RPM_BUILD_ROOT%{_sysconfdir}/tor/README
+make install DESTDIR=%{buildroot}
+mv %{buildroot}%{_sysconfdir}/tor/torrc.sample \
+    %{buildroot}%{_sysconfdir}/tor/torrc
+install -D -p -m 0644 %{SOURCE20} %{buildroot}%{_sysconfdir}/tor/README
 
-mkdir -p $RPM_BUILD_ROOT%{logdir}
-mkdir -p $RPM_BUILD_ROOT%{homedir}
+mkdir -p %{buildroot}%{logdir}
+mkdir -p %{buildroot}%{homedir}
 
-install -D -p -m 0644 %{SOURCE10} $RPM_BUILD_ROOT%_unitdir/%{name}.service
-install -D -p -m 0644 %{SOURCE11} $RPM_BUILD_ROOT%_unitdir/%{name}@.service
-install -D -p -m 0644 %{SOURCE12} $RPM_BUILD_ROOT%_unitdir/%{name}-master.service
-install -D -p -m 0644 %{SOURCE2}  $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/tor
-install -D -p -m 0644 %{SOURCE3}  $RPM_BUILD_ROOT%{_datadir}/%{name}/defaults-torrc
+install -D -p -m 0644 %{SOURCE10} %{buildroot}%_unitdir/tor.service
+install -D -p -m 0644 %{SOURCE11} %{buildroot}%_unitdir/tor@.service
+install -D -p -m 0644 %{SOURCE12} %{buildroot}%_unitdir/tor-master.service
+install -D -p -m 0644 %{SOURCE2}  %{buildroot}%{_sysconfdir}/logrotate.d/tor
+install -D -p -m 0644 %{SOURCE3}  %{buildroot}%{_datadir}/tor/defaults-torrc
+install -D -p -m 0644 %{SOURCE4}  %{buildroot}%{_tmpfilesdir}/tor.conf
+
+install -d -m 0750 %{buildroot}/run/tor
 
 %if 0%{without libsystemd}
 # Some features are not available for systemd 208 on RHEL 7.
-sed -i $RPM_BUILD_ROOT%_unitdir/%{name}.service \
-    -i $RPM_BUILD_ROOT%_unitdir/%{name}@.service \
+sed -i %{buildroot}%_unitdir/tor.service \
+    -i %{buildroot}%_unitdir/tor@.service \
     -e 's/^Type=.*/Type=simple/g' \
     -e '/^NotifyAccess=.*/d' \
     -e '/^WatchdogSec=.*/d' \
@@ -128,18 +133,18 @@ getent passwd %{toruser} >/dev/null || \
 exit 0
 
 %post
-%systemd_post %{name}.service
+%systemd_post tor.service
 
 %preun
-%systemd_preun %{name}.service
-%systemd_preun %{name}-master.service
+%systemd_preun tor.service
+%systemd_preun tor-master.service
 
 %postun
 systemctl daemon-reload >/dev/null 2>&1 || :
 if [ $1 -ge 1 ]; then
     # Use restart instead of try-restart, as tor-master may be "inactive" even
     # when there are tor.service and tor@.service instances running.
-    systemctl restart %{name}-master.service >/dev/null 2>&1 || :
+    systemctl restart tor-master.service >/dev/null 2>&1 || :
 fi
 
 
@@ -157,9 +162,10 @@ fi
 %{_datadir}/tor/defaults-torrc
 %{_datadir}/tor/geoip
 %{_datadir}/tor/geoip6
-%{_unitdir}/%{name}.service
-%{_unitdir}/%{name}@.service
-%{_unitdir}/%{name}-master.service
+%{_tmpfilesdir}/tor.conf
+%{_unitdir}/tor.service
+%{_unitdir}/tor@.service
+%{_unitdir}/tor-master.service
 
 %dir %{_sysconfdir}/tor
 %{_sysconfdir}/tor/README
@@ -168,6 +174,7 @@ fi
 
 %attr(0750,%{toruser},root) %dir %{homedir}
 %attr(0750,%{toruser},%{torgroup}) %dir %{logdir}
+%attr(0700,%{toruser},%{torgroup}) %dir %{rundir}
 
 
 %changelog
