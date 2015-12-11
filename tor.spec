@@ -36,7 +36,9 @@ Source20:   README
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1279222
 # https://trac.torproject.org/projects/tor/ticket/17562
-Patch0:     tor-0.2.6.10-Optionally-allow-root-group-access-to-DataDirectory.patch
+Patch0:     0001-Permit-filesystem-group-to-be-root.patch
+Patch1:     0002-Introduce-DataDirectoryGroupReadable-boolean.patch
+Patch2:     0003-Defer-creation-of-Unix-socket-until-after-setuid.patch
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -79,6 +81,8 @@ Tor network, or as a client to connect to the Tor network.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 
 %build
