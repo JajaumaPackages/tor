@@ -20,7 +20,7 @@
 
 Name:       tor
 Version:    0.2.7.6
-Release:    3%{?dist}
+Release:    4%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -185,6 +185,9 @@ fi
 
 
 %changelog
+* Wed Dec 16 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-4
+- fix tmpfiles.d
+
 * Fri Dec 11 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-3
 - place ControlSocket and CookieAuthFile at top of torrc for visibility
 
