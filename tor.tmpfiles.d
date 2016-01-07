@@ -1,1 +1,1 @@
-d /run/tor 0700 toranon toranon
+d /run/tor 0750 toranon toranon

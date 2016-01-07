@@ -1,23 +1,25 @@
-From 960992ebca360e1e7303f15f27238e34d5c0d303 Mon Sep 17 00:00:00 2001
+From 836960177eb961d1009cdb5fb4632592abfb3376 Mon Sep 17 00:00:00 2001
 From: Jamie Nguyen <j@jamielinux.com>
-Date: Fri, 11 Dec 2015 09:50:00 +0000
+Date: Thu, 7 Jan 2016 11:01:32 +0000
 Subject: [PATCH] Add ControlSocket and CookieAuthFile to torrc
 
 ---
- src/config/torrc.sample.in | 4 ++++
- 1 file changed, 4 insertions(+)
+ src/config/torrc.sample.in | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/src/config/torrc.sample.in b/src/config/torrc.sample.in
-index 248cb5c..a62917d 100644
+index 248cb5c..295cff4 100644
 --- a/src/config/torrc.sample.in
 +++ b/src/config/torrc.sample.in
-@@ -12,6 +12,10 @@
+@@ -12,6 +12,12 @@
  ## Tor will look for this file in various places based on your platform:
  ## https://www.torproject.org/docs/faq#torrc
  
 +ControlSocket /run/tor/control
++ControlSocketsGroupWritable 1
 +CookieAuthentication 1
 +CookieAuthFile /run/tor/control.authcookie
++CookieAuthFileGroupReadable 1
 +
  ## Tor opens a SOCKS proxy on port 9050 by default -- even if you don't
  ## configure one below. Set "SOCKSPort 0" if you plan to run Tor only

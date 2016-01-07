@@ -20,7 +20,7 @@
 
 Name:       tor
 Version:    0.2.7.6
-Release:    4%{?dist}
+Release:    5%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -181,10 +181,13 @@ fi
 
 %attr(0750,%{toruser},root) %dir %{homedir}
 %attr(0750,%{toruser},%{torgroup}) %dir %{logdir}
-%attr(0700,%{toruser},%{torgroup}) %dir %{rundir}
+%attr(0750,%{toruser},%{torgroup}) %dir %{rundir}
 
 
 %changelog
+* Thu Jan 07 2016 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-5
+- make ControlSocket writable by toranon group (#1296226)
+
 * Wed Dec 16 2015 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-4
 - fix tmpfiles.d
 
