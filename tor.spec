@@ -20,7 +20,7 @@
 
 Name:       tor
 Version:    0.2.7.6
-Release:    5%{?dist}
+Release:    6%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -185,6 +185,9 @@ fi
 
 
 %changelog
+* Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.7.6-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
 * Thu Jan 07 2016 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.7.6-5
 - make ControlSocket writable by toranon group (#1296226)
 
