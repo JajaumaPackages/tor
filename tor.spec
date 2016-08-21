@@ -19,8 +19,8 @@
 %endif
 
 Name:       tor
-Version:    0.2.7.6
-Release:    6%{?dist}
+Version:    0.2.8.6
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -37,14 +37,6 @@ Source12:   tor-master.service
 Source20:   README
 
 Patch0:     tor-0.2.7.6-torrc-ControlSocket-and-CookieAuthFile.patch
-
-# These patches have been sent upstream and accepted:
-# https://trac.torproject.org/projects/tor/ticket/17562
-Patch1:     0001-Permit-filesystem-group-to-be-root.patch
-Patch2:     0002-Introduce-DataDirectoryGroupReadable-boolean.patch
-Patch3:     0003-Defer-creation-of-Unix-socket-until-after-setuid.patch
-Patch4:     0004-Simplify-cpd_opts-usage.patch
-Patch5:     0005-Fix-wide-line-log-why-chmod-failed.patch
 
 BuildRequires:    asciidoc
 BuildRequires:    libevent-devel
@@ -86,12 +78,6 @@ Tor network, or as a client to connect to the Tor network.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
 
 
 %build
@@ -185,6 +171,10 @@ fi
 
 
 %changelog
+* Sun Aug 21 2016 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.8.6-1
+- update to upstream release 0.2.8.6
+- remove upstreamed patches
+
 * Fri Feb 05 2016 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.7.6-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
