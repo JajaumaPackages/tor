@@ -20,7 +20,7 @@
 
 Name:       tor
 Version:    0.2.8.6
-Release:    1%{?dist}
+Release:    2%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -78,6 +78,7 @@ Tor network, or as a client to connect to the Tor network.
 
 %prep
 %setup -q
+%patch0 -p1
 
 
 %build
@@ -171,6 +172,9 @@ fi
 
 
 %changelog
+* Sun Aug 21 2016 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.8.6-2
+- re-add patch0
+
 * Sun Aug 21 2016 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.8.6-1
 - update to upstream release 0.2.8.6
 - remove upstreamed patches
