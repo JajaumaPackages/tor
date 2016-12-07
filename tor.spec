@@ -19,7 +19,7 @@
 %endif
 
 Name:       tor
-Version:    0.2.8.9
+Version:    0.2.8.10
 Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Wed Dec 07 2016 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.8.10-1
+- update to upstream release 0.2.8.10
+
 * Wed Oct 19 2016 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.8.9-1
 - update to upstream release 0.2.8.9
 
