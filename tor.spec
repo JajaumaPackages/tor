@@ -19,8 +19,8 @@
 %endif
 
 Name:       tor
-Version:    0.2.8.12
-Release:    2%{?dist}
+Version:    0.2.9.10
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Fri Mar 03 2017 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.9.10-1
+- update to upstream release 0.2.9.10
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.8.12-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
