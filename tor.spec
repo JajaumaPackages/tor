@@ -20,7 +20,7 @@
 
 Name:       tor
 Version:    0.3.0.6
-Release:    1%{?dist}
+Release:    2%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -118,6 +118,8 @@ sed -i %{buildroot}%_unitdir/tor.service \
 # Install docs manually.
 rm -rf %{buildroot}%{_datadir}/doc
 
+%check
+make check
 
 %pre
 getent group %{torgroup} >/dev/null || groupadd -r %{torgroup}
@@ -172,6 +174,9 @@ fi
 
 
 %changelog
+* Sat Apr 29 2017 Jajauma's Packages <jajauma@yandex.ru> - 0.3.0.6-2
+- Run tests suite
+
 * Sat Apr 29 2017 Jajauma's Packages <jajauma@yandex.ru> - 0.3.0.6-1
 - Update to latest upstream release
 
