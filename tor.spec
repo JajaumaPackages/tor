@@ -19,7 +19,7 @@
 %endif
 
 Name:       tor
-Version:    0.2.9.10
+Version:    0.3.0.6
 Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
@@ -172,6 +172,9 @@ fi
 
 
 %changelog
+* Sat Apr 29 2017 Jajauma's Packages <jajauma@yandex.ru> - 0.3.0.6-1
+- Update to latest upstream release
+
 * Fri Mar 03 2017 Jamie Nguyen <jamielinux@fedoraproject.org> - 0.2.9.10-1
 - update to upstream release 0.2.9.10
 
