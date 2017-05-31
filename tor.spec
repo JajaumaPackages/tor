@@ -19,8 +19,8 @@
 %endif
 
 Name:       tor
-Version:    0.3.0.6
-Release:    2%{?dist}
+Version:    0.3.0.7
+Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
 Summary:    Anonymizing overlay network for TCP
@@ -174,6 +174,9 @@ fi
 
 
 %changelog
+* Wed May 31 2017 Jajauma's Packages <jajauma@yandex.ru> - 0.3.0.7-1
+- Update to latest upstream release
+
 * Sat Apr 29 2017 Jajauma's Packages <jajauma@yandex.ru> - 0.3.0.6-2
 - Run tests suite
 
