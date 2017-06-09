@@ -19,7 +19,7 @@
 %endif
 
 Name:       tor
-Version:    0.3.0.7
+Version:    0.3.0.8
 Release:    1%{?dist}
 Group:      System Environment/Daemons
 License:    BSD
@@ -174,6 +174,9 @@ fi
 
 
 %changelog
+* Fri Jun 09 2017 Jajauma's Packages <jajauma@yandex.ru> - 0.3.0.8-1
+- Update to latest upstream release
+
 * Wed May 31 2017 Jajauma's Packages <jajauma@yandex.ru> - 0.3.0.7-1
 - Update to latest upstream release
 
